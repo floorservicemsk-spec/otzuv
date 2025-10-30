@@ -225,19 +225,14 @@ function markStepCompleted(element) {
             isCompleted = true;
         }
     } else if (stepType === 'bigcheckbox') {
-        // Check if at least one checkbox is selected or "nothing needed" radio
+        // Check if at least one checkbox is selected
         const checkboxes = step.querySelectorAll('input[type="checkbox"][data-step]');
-        const nothingRadio = step.querySelector('input[name="no_discounts"]');
         
         checkboxes.forEach(checkbox => {
             if (checkbox.checked) {
                 isCompleted = true;
             }
         });
-        
-        if (nothingRadio && nothingRadio.checked) {
-            isCompleted = true;
-        }
     }
     
     // Hide error if completed
@@ -294,17 +289,12 @@ function initFormSubmission() {
                 }
             } else if (stepType === 'bigcheckbox') {
                 const checkboxes = step.querySelectorAll('input[type="checkbox"][data-step]');
-                const nothingRadio = step.querySelector('input[name="no_discounts"]');
                 
                 checkboxes.forEach(checkbox => {
                     if (checkbox.checked) {
                         isValid = true;
                     }
                 });
-                
-                if (nothingRadio && nothingRadio.checked) {
-                    isValid = true;
-                }
             }
             
             if (!isValid) {
@@ -347,22 +337,24 @@ function showSuccessMessage() {
     }, 500);
 }
 
-// "Nothing needed" radio functionality
+// "Nothing needed" checkbox functionality
 document.addEventListener('change', function(e) {
-    if (e.target.name === 'no_discounts') {
-        const checkboxes = document.querySelectorAll('input[name="discounts[]"]');
+    if (e.target.id === 'nothing-needed') {
+        const checkboxes = document.querySelectorAll('input[name="discounts[]"]:not(#nothing-needed)');
         if (e.target.checked) {
+            // Uncheck all other options when "Nothing needed" is selected
             checkboxes.forEach(checkbox => {
                 checkbox.checked = false;
             });
-            markStepCompleted(e.target);
         }
+        markStepCompleted(e.target);
     }
     
-    if (e.target.name === 'discounts[]') {
-        const nothingRadio = document.querySelector('input[name="no_discounts"]');
-        if (e.target.checked && nothingRadio) {
-            nothingRadio.checked = false;
+    if (e.target.name === 'discounts[]' && e.target.id !== 'nothing-needed') {
+        const nothingCheckbox = document.querySelector('#nothing-needed');
+        if (e.target.checked && nothingCheckbox) {
+            // Uncheck "Nothing needed" when any product is selected
+            nothingCheckbox.checked = false;
         }
         markStepCompleted(e.target);
     }
