@@ -675,8 +675,28 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+    #site {
+        padding: 20px 10px;
+    }
+
     .container {
-        padding: 40px 25px;
+        padding: 30px 20px;
+    }
+
+    .header {
+        margin-bottom: 30px;
+    }
+
+    .logo {
+        font-size: 50px;
+    }
+
+    .main-title {
+        font-size: 22px;
+    }
+
+    .subtitle {
+        font-size: 14px;
     }
 
     .content-container {
@@ -686,44 +706,194 @@ body {
 
     .step {
         gap: 15px;
+        margin-bottom: 30px;
     }
 
     .step .num {
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
+        flex-shrink: 0;
     }
 
     .step .num span {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
+        width: 35px;
+        height: 35px;
+        font-size: 16px;
     }
 
-    .main-title {
+    .step-good .num::before {
+        width: 35px;
+        height: 35px;
         font-size: 24px;
     }
 
+    .info .title {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .info .subtitle {
+        font-size: 13px;
+    }
+
+    .input input {
+        padding: 12px 15px;
+        font-size: 15px;
+    }
+
+    .input-radio {
+        padding: 12px 15px;
+    }
+
+    .input-text {
+        font-size: 15px;
+    }
+
     .stars {
-        flex-wrap: wrap;
-        gap: 10px;
+        flex-direction: column;
+        gap: 8px;
     }
 
     .star {
-        flex: 0 0 calc(50% - 5px);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 15px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+    }
+
+    .star:hover {
+        background: #fff5f5;
+        border-color: #BF081A;
+    }
+
+    .star.active,
+    .star.hover-active {
+        background: #fff5f5;
+        border-color: #BF081A;
+    }
+
+    .star-icon {
+        font-size: 32px;
+        margin-bottom: 0;
+    }
+
+    .star-name {
+        opacity: 1 !important;
+        text-align: left;
+        flex: 1;
     }
 
     .star-start {
         position: static;
         transform: none;
         margin-top: 15px;
+        font-size: 12px;
     }
 
     .line-textarea {
         flex-direction: column;
     }
 
+    .dop-textarea textarea {
+        min-height: 80px;
+    }
+
+    .stars-good {
+        padding: 20px;
+    }
+
+    .stars-good-text {
+        font-size: 13px;
+    }
+
+    .stars-btns {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .stars-btns .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .stars-btns svg {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto;
+    }
+
     .big-input-radio {
-        flex: 0 0 calc(50% - 10px);
-        max-width: calc(50% - 10px);
+        flex: 0 0 calc(50% - 8px);
+        max-width: calc(50% - 8px);
+    }
+
+    .big-img {
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
+
+    .big-title {
+        font-size: 14px;
+    }
+
+    .big-text {
+        font-size: 13px;
+    }
+
+    .step[data-step="6"] .variable {
+        gap: 10px;
+    }
+
+    .step[data-step="6"] .input-radio.full-width {
+        margin-top: 5px;
+    }
+
+    .main-btn {
+        margin-top: 30px;
+    }
+
+    .btn {
+        padding: 15px 40px;
+        font-size: 15px;
+        width: 100%;
+    }
+
+    .garantiya {
+        font-size: 13px;
+    }
+
+    .end {
+        font-size: 24px;
+        padding: 60px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 25px 15px;
+        border-radius: 0;
+    }
+
+    .main-title {
+        font-size: 20px;
+    }
+
+    .subtitle {
+        font-size: 13px;
+    }
+
+    .big-input-radio {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .big-input-content {
+        padding: 15px 10px;
+    }
+
+    .step[data-step="6"] .variable {
+        gap: 12px;
     }
 }
