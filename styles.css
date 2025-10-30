@@ -403,6 +403,13 @@ body {
     font-size: 12px;
     color: #666;
     font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.star:hover .star-name,
+.star.active .star-name {
+    opacity: 1;
 }
 
 .star-start {
