@@ -423,6 +423,7 @@ body {
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
+    position: relative;
 }
 
 .star:hover {
@@ -443,16 +444,39 @@ body {
 }
 
 .star-name {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
     font-size: 12px;
-    color: #666;
+    color: white;
     font-weight: 500;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 8px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 100;
 }
 
-.star:hover .star-name,
-.star.active .star-name {
+.star-name::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.85);
+}
+
+.star:hover .star-name {
     opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
 }
 
 .star-start {
@@ -917,9 +941,19 @@ body {
     }
 
     .star-name {
+        position: static;
         opacity: 1 !important;
+        visibility: visible !important;
         text-align: left;
         flex: 1;
+        transform: none !important;
+        background: transparent;
+        color: #666;
+        padding: 0;
+    }
+    
+    .star-name::after {
+        display: none;
     }
 
     .star-start {
