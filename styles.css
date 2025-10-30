@@ -66,6 +66,12 @@ body {
     margin-bottom: 20px;
 }
 
+.logo-image {
+    max-width: 200px;
+    height: auto;
+    display: block;
+}
+
 .logo {
     font-size: 60px;
 }
@@ -516,12 +522,12 @@ body {
 }
 
 .stars-good {
-    background: rgba(47, 111, 48, 0.08);
+    background: rgba(195, 32, 46, 0.08);
     backdrop-filter: blur(10px);
     padding: 25px;
     border-radius: 16px;
-    border: 1px solid rgba(47, 111, 48, 0.2);
-    box-shadow: 0 4px 16px rgba(47, 111, 48, 0.1);
+    border: 1px solid rgba(195, 32, 46, 0.2);
+    box-shadow: 0 4px 16px rgba(195, 32, 46, 0.1);
 }
 
 .stars-good-text {
@@ -735,8 +741,13 @@ body {
 }
 
 .big-img {
-    font-size: 50px;
+    width: 80px;
+    height: 80px;
     margin-bottom: 15px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
 }
 
 .big-title {
@@ -748,7 +759,7 @@ body {
 
 .big-text {
     font-size: 14px;
-    color: #2f6f30;
+    color: #c3202e;
     font-weight: 600;
 }
 
@@ -775,7 +786,7 @@ body {
     height: 20px;
     cursor: pointer;
     flex-shrink: 0;
-    accent-color: #2f6f30;
+    accent-color: #c3202e;
 }
 
 .consent-checkbox label {
@@ -787,7 +798,7 @@ body {
 }
 
 .consent-checkbox label a {
-    color: #2f6f30;
+    color: #c3202e;
     text-decoration: underline;
     transition: color 0.3s ease;
 }
@@ -815,14 +826,14 @@ body {
 }
 
 .privacy-links a:hover {
-    color: #2f6f30;
-    background: rgba(47, 111, 48, 0.05);
+    color: #c3202e;
+    background: rgba(195, 32, 46, 0.05);
 }
 
 .btn {
     display: inline-block;
     padding: 18px 50px;
-    background: linear-gradient(135deg, #2f6f30 0%, #3d8b3e 100%);
+    background: linear-gradient(135deg, #c3202e 0%, #e02d3c 100%);
     color: white;
     text-decoration: none;
     border-radius: 16px;
@@ -833,7 +844,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     cursor: pointer;
     box-shadow: 
-        0 8px 24px rgba(47, 111, 48, 0.3),
+        0 8px 24px rgba(195, 32, 46, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
@@ -846,7 +857,7 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     transition: left 0.5s ease;
 }
 
@@ -856,9 +867,58 @@ body {
 
 .btn:hover {
     box-shadow: 
-        0 12px 32px rgba(47, 111, 48, 0.4),
+        0 12px 32px rgba(195, 32, 46, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
     transform: translateY(-3px) scale(1.02);
+}
+
+/* Анимация блика для кнопки отзыва */
+.stars-btns .btn {
+    position: relative;
+    overflow: hidden;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.stars-btns .btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.4) 50%,
+        transparent 70%
+    );
+    animation: shine 3s ease-in-out infinite;
+}
+
+@keyframes shine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    50% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 
+            0 8px 24px rgba(195, 32, 46, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 8px 32px rgba(195, 32, 46, 0.5),
+            0 0 30px rgba(195, 32, 46, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
 }
 
 .garantiya {
@@ -891,6 +951,10 @@ body {
 
     .header {
         margin-bottom: 30px;
+    }
+
+    .logo-image {
+        max-width: 150px;
     }
 
     .logo {
