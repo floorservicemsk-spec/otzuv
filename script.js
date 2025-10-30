@@ -263,6 +263,14 @@ function initFormSubmission() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
+        // Check consent checkbox
+        const consentCheckbox = document.getElementById('consent');
+        if (!consentCheckbox.checked) {
+            alert('Пожалуйста, дайте согласие на обработку персональных данных');
+            consentCheckbox.focus();
+            return;
+        }
+        
         // Validate all steps
         let allValid = true;
         const steps = document.querySelectorAll('.step');
