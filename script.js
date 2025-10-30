@@ -324,9 +324,40 @@ function initFormSubmission() {
         });
         
         if (allValid) {
-            // All steps are valid, show success message
-            showSuccessMessage();
+            // All steps are valid, submit form via AJAX
+            submitFormData(form);
         }
+    });
+}
+
+function submitFormData(form) {
+    const formData = new FormData(form);
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerHTML;
+    
+    // Показываем индикатор загрузки
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<span>ОТПРАВКА...</span>';
+    
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showSuccessMessage();
+        } else {
+            alert(data.message || 'Произошла ошибка при отправке формы');
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalText;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Произошла ошибка при отправке формы. Попробуйте позже.');
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalText;
     });
 }
 
