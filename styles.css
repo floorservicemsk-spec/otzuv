@@ -49,13 +49,7 @@ body {
 }
 
 .container-border {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, rgba(191, 8, 26, 0.8) 0%, rgba(47, 111, 48, 0.8) 100%);
-    border-radius: 24px 24px 0 0;
+    display: none;
 }
 
 /* Header */
@@ -531,16 +525,44 @@ body {
 .stars-btns {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
 }
 
 .stars-btns .btn {
     display: inline-block;
+    flex-shrink: 0;
 }
 
 .stars-btns svg {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+}
+
+.stars-btns-arrow {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.arrow-text {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.arrow-icon {
+    font-size: 40px;
+    animation: arrowBounce 1.5s infinite;
+}
+
+@keyframes arrowBounce {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(10px);
+    }
 }
 
 /* Big checkboxes */
@@ -566,6 +588,7 @@ body {
     flex: 0 0 calc(33.333% - 10px);
     max-width: calc(33.333% - 10px);
     position: relative;
+    height: 100%;
 }
 
 .big-input-radio.full-width {
@@ -581,12 +604,19 @@ body {
     top: 0;
     left: 0;
     cursor: pointer;
-    z-index: 10;
+    z-index: 1;
+    margin: 0;
 }
 
 .big-input-content {
     position: relative;
     width: 100%;
+    height: 100%;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -595,6 +625,7 @@ body {
     text-align: center;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    pointer-events: none;
 }
 
 .big-input-radio:hover .big-input-content {
@@ -672,7 +703,7 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 5;
+    pointer-events: none;
 }
 
 .big-input-radio .input-left svg {
@@ -916,7 +947,8 @@ body {
 
     .stars-btns {
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
+        gap: 15px;
     }
 
     .stars-btns .btn {
@@ -924,10 +956,18 @@ body {
         text-align: center;
     }
 
+    .stars-btns-arrow {
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .arrow-icon {
+        font-size: 30px;
+    }
+
     .stars-btns svg {
         width: 50px;
         height: 50px;
-        margin: 0 auto;
     }
 
     .big-input-radio {
