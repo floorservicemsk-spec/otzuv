@@ -1,0 +1,663 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #e6e8ea;
+}
+
+#site {
+    min-height: 100vh;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #e6e8ea 0%, #f5f5f5 100%);
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.3);
+    padding: 60px 50px;
+    position: relative;
+}
+
+.container-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #BF081A 0%, #2f6f30 100%);
+    border-radius: 8px 8px 0 0;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.header h1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.logo {
+    font-size: 60px;
+}
+
+.main-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+}
+
+.main-title .b1 {
+    color: #BF081A;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.8;
+    font-weight: 400;
+}
+
+/* Steps */
+.steps {
+    margin-bottom: 40px;
+}
+
+.step {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.step.step-active {
+    opacity: 1;
+}
+
+.step.step-good {
+    opacity: 1;
+}
+
+.step .num {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    position: relative;
+}
+
+.step .num span {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.step-active .num span {
+    background: #BF081A;
+}
+
+.step-good .num::before {
+    content: '✓';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #BF081A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: white;
+    z-index: 1;
+}
+
+.step-good .num span {
+    background-color: #BF081A;
+}
+
+.step .content {
+    flex: 1;
+}
+
+.content-container {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 20px;
+}
+
+.info {
+    flex: 1;
+}
+
+.info .title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #BF081A;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.info .subtitle {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.variable {
+    flex: 1;
+}
+
+.red-error {
+    color: #BF081A;
+    font-size: 14px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+/* Input styles */
+.input {
+    margin-bottom: 15px;
+}
+
+.input input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+.input input:hover,
+.input input:focus {
+    border-color: #BF081A;
+}
+
+.input-or {
+    text-align: center;
+    color: #999;
+    margin: 15px 0;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+/* Radio buttons */
+.input-radio {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.input-radio:hover {
+    border-color: #BF081A;
+    background: #fff5f5;
+}
+
+.input-radio input[type="radio"] {
+    display: none;
+}
+
+.input-left {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.input-radio input[type="radio"]:checked + .input-left {
+    border-color: #BF081A;
+}
+
+.input-radio input[type="radio"]:checked + .input-left::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #BF081A;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.input-text {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Additional work textareas */
+.dops-textarea {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.line-textarea {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.dop-textarea {
+    flex: 1;
+}
+
+.dop-textarea textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+.dop-textarea textarea:hover,
+.dop-textarea textarea:focus {
+    border-color: #BF081A;
+}
+
+.dop-remove {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    margin-top: 10px;
+}
+
+.dop-remove svg {
+    width: 20px;
+    height: 20px;
+    fill: #999;
+    transition: fill 0.3s ease;
+}
+
+.dop-remove:hover svg {
+    fill: #BF081A;
+}
+
+.dops-add {
+    margin-top: 15px;
+}
+
+.dop-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border: 2px solid #BF081A;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dop-add:hover {
+    background: #BF081A;
+    color: white;
+}
+
+.dop-add:hover .d-1 svg {
+    fill: white;
+}
+
+.dop-add:hover .d-2 {
+    color: white;
+}
+
+.d-1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.d-1 svg {
+    width: 20px;
+    height: 20px;
+    fill: #BF081A;
+    transition: fill 0.3s ease;
+}
+
+.d-2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #BF081A;
+    transition: color 0.3s ease;
+}
+
+/* Star rating */
+.stars {
+    display: flex;
+    gap: 15px;
+    position: relative;
+}
+
+.stars input[type="hidden"] {
+    display: none;
+}
+
+.star {
+    text-align: center;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.3s ease;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.star:hover {
+    background: #fff5f5;
+}
+
+.star-icon {
+    font-size: 40px;
+    color: #ddd;
+    transition: color 0.3s ease;
+    margin-bottom: 8px;
+}
+
+.star.active .star-icon,
+.star.hover-active .star-icon {
+    color: #FFD700;
+}
+
+.star-name {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+}
+
+.star-start {
+    position: absolute;
+    right: -180px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: #666;
+    background: #f0f0f0;
+    padding: 10px 15px;
+    border-radius: 8px;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.stars-bad,
+.stars-good {
+    margin-top: 20px;
+}
+
+.stars-bad textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+.stars-bad textarea:hover,
+.stars-bad textarea:focus {
+    border-color: #BF081A;
+}
+
+.stars-good {
+    background: #f0f9f0;
+    padding: 25px;
+    border-radius: 8px;
+}
+
+.stars-good-text {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.stars-good-text .red {
+    color: #FF0000;
+    font-weight: 700;
+}
+
+.stars-btns {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.stars-btns .btn {
+    display: inline-block;
+}
+
+.stars-btns svg {
+    width: 60px;
+    height: 60px;
+}
+
+/* Big checkboxes */
+.big-input-radio {
+    display: inline-block;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.big-input-radio input[type="checkbox"] {
+    display: none;
+}
+
+.big-input-content {
+    position: relative;
+    width: 160px;
+    border: 3px solid #ddd;
+    border-radius: 12px;
+    padding: 20px 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.big-input-radio:hover .big-input-content {
+    border-color: #BF081A;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.big-input-radio input[type="checkbox"]:checked ~ .big-input-content {
+    border-color: #BF081A;
+    background: #fff5f5;
+}
+
+.big-input-radio input[type="checkbox"]:checked ~ .big-input-content .input-left {
+    background: #BF081A;
+    border-color: #BF081A;
+}
+
+.big-input-radio input[type="checkbox"]:checked ~ .big-input-content .input-left svg {
+    opacity: 1;
+}
+
+.big-input-radio .input-left {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.big-input-radio .input-left svg {
+    width: 16px;
+    height: 16px;
+    fill: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.big-img {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.big-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.big-text {
+    font-size: 14px;
+    color: #2f6f30;
+    font-weight: 600;
+}
+
+/* Submit button */
+.main-btn {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 18px 50px;
+    background: #2f6f30;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0px 5px 15px rgba(47, 111, 48, 0.3);
+}
+
+.btn:hover {
+    box-shadow: 0px 7px 25px rgba(47, 111, 48, 0.5);
+    transform: translateY(-2px);
+}
+
+.garantiya {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* End message */
+.end {
+    text-align: center;
+    padding: 80px 20px;
+    font-size: 32px;
+    color: #2f6f30;
+}
+
+.end .b1 {
+    font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 40px 25px;
+    }
+
+    .content-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .step {
+        gap: 15px;
+    }
+
+    .step .num {
+        width: 40px;
+        height: 40px;
+    }
+
+    .step .num span {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .main-title {
+        font-size: 24px;
+    }
+
+    .stars {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .star {
+        flex: 0 0 calc(50% - 5px);
+    }
+
+    .star-start {
+        position: static;
+        transform: none;
+        margin-top: 15px;
+    }
+
+    .line-textarea {
+        flex-direction: column;
+    }
+
+    .big-input-radio {
+        display: block;
+        margin: 10px 0;
+    }
+
+    .big-input-content {
+        width: 100%;
+    }
+}
