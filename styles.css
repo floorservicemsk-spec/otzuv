@@ -483,10 +483,32 @@ body {
 }
 
 /* Big checkboxes */
+.step[data-step="6"] .content-container {
+    flex-direction: column;
+    gap: 20px;
+}
+
+.step[data-step="6"] .info {
+    text-align: center;
+}
+
+.step[data-step="6"] .variable {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
 .big-input-radio {
-    display: inline-block;
-    margin: 10px;
+    display: block;
     cursor: pointer;
+    flex: 0 0 calc(33.333% - 10px);
+    max-width: calc(33.333% - 10px);
+}
+
+.big-input-radio.full-width {
+    flex: 0 0 100%;
+    max-width: 400px;
 }
 
 .big-input-radio input[type="checkbox"] {
@@ -495,7 +517,7 @@ body {
 
 .big-input-content {
     position: relative;
-    width: 160px;
+    width: 100%;
     border: 3px solid #ddd;
     border-radius: 12px;
     padding: 20px 15px;
@@ -522,6 +544,32 @@ body {
 
 .big-input-radio input[type="checkbox"]:checked ~ .big-input-content .input-left svg {
     opacity: 1;
+}
+
+.step[data-step="6"] .input-radio.full-width {
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-top: 10px;
+}
+
+.step[data-step="6"] .input-radio input[type="checkbox"] {
+    display: none;
+}
+
+.step[data-step="6"] .input-radio input[type="checkbox"]:checked + .input-left {
+    border-color: #BF081A;
+}
+
+.step[data-step="6"] .input-radio input[type="checkbox"]:checked + .input-left::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #BF081A;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .big-input-radio .input-left {
@@ -660,11 +708,7 @@ body {
     }
 
     .big-input-radio {
-        display: block;
-        margin: 10px 0;
-    }
-
-    .big-input-content {
-        width: 100%;
+        flex: 0 0 calc(50% - 10px);
+        max-width: calc(50% - 10px);
     }
 }
