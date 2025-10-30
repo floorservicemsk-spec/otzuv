@@ -543,6 +543,7 @@ body {
 .big-input-radio input[type="checkbox"]:checked ~ .big-input-content {
     border-color: #BF081A;
     background: #fff5f5;
+    box-shadow: 0 0 0 3px rgba(191, 8, 26, 0.1);
 }
 
 .big-input-radio input[type="checkbox"]:checked ~ .big-input-content .input-left {
@@ -552,6 +553,11 @@ body {
 
 .big-input-radio input[type="checkbox"]:checked ~ .big-input-content .input-left svg {
     opacity: 1;
+}
+
+.big-input-radio input[type="checkbox"]:checked ~ .big-input-content .big-title {
+    color: #BF081A;
+    font-weight: 700;
 }
 
 .step[data-step="6"] .input-radio.full-width {
