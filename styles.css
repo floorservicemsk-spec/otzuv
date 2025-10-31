@@ -548,45 +548,12 @@ body {
 
 .stars-btns {
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 20px;
 }
 
 .stars-btns .btn {
     display: inline-block;
-    flex-shrink: 0;
-}
-
-.stars-btns svg {
-    width: 70px;
-    height: 70px;
-    flex-shrink: 0;
-}
-
-.stars-btns-arrow {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.arrow-text {
-    font-size: 14px;
-    color: #666;
-    font-weight: 500;
-}
-
-.arrow-icon {
-    font-size: 40px;
-    animation: arrowBounce 1.5s infinite;
-}
-
-@keyframes arrowBounce {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    50% {
-        transform: translateX(10px);
-    }
 }
 
 /* Big checkboxes */
@@ -876,6 +843,22 @@ body {
     transform: translateY(-3px) scale(1.02);
 }
 
+.btn:disabled {
+    background: linear-gradient(135deg, #999 0%, #777 100%);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
 /* Анимация блика для кнопки отзыва */
 .stars-btns .btn {
     position: relative;
@@ -1080,20 +1063,6 @@ body {
     .stars-btns .btn {
         width: 100%;
         text-align: center;
-    }
-
-    .stars-btns-arrow {
-        flex-direction: row;
-        gap: 10px;
-    }
-
-    .arrow-icon {
-        font-size: 30px;
-    }
-
-    .stars-btns svg {
-        width: 50px;
-        height: 50px;
     }
 
     .big-input-radio {

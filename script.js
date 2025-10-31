@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Input validation for step completion
     initStepValidation();
+    
+    // Submit button control
+    initSubmitButtonControl();
 });
 
 // Initialize phone mask
@@ -394,6 +397,24 @@ function showSuccessMessage() {
             endMessage.style.opacity = '1';
         }, 100);
     }, 500);
+}
+
+// Submit button control based on consent checkbox
+function initSubmitButtonControl() {
+    const consentCheckbox = document.getElementById('consent');
+    const submitButton = document.getElementById('submit-btn');
+    
+    if (consentCheckbox && submitButton) {
+        // Initial state is disabled (set in HTML)
+        
+        consentCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        });
+    }
 }
 
 // "Nothing needed" checkbox functionality
