@@ -175,9 +175,10 @@ function sendToGoogleSheets($url, $data) {
             'Content-Type: application/json',
             'Content-Length: ' . strlen(json_encode($data))
         ));
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); // Не следовать за редиректами
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1); // Использовать HTTP/1.1
         
         $result = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -191,7 +192,8 @@ function sendToGoogleSheets($url, $data) {
             error_log("CURL Error: " . $error);
         }
         
-        return ($httpCode == 200 || $httpCode == 302) && $result !== false;
+        // Google Apps Script возвращает 302 при успешной отправке
+        return ($httpCode == 200 || $httpCode == 302);
     }
     
     // Альтернативный метод через file_get_contents

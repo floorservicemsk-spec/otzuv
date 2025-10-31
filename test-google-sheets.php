@@ -40,9 +40,10 @@ if (function_exists('curl_init')) {
         'Content-Type: application/json',
         'Content-Length: ' . strlen(json_encode($test_data))
     ));
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); // Не следовать за редиректами
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1); // HTTP/1.1
     
     $result = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -61,6 +62,7 @@ if (function_exists('curl_init')) {
     
     if ($httpCode == 200 || $httpCode == 302) {
         echo "<p style='color: green; font-weight: bold;'>✅ Отправка успешна! Проверьте Google Таблицу.</p>";
+        echo "<p style='color: blue;'><strong>Примечание:</strong> HTTP 302 - это нормальный ответ от Google Apps Script при успешной отправке данных.</p>";
     } else {
         echo "<p style='color: red; font-weight: bold;'>❌ Ошибка отправки. Проверьте настройки.</p>";
     }
