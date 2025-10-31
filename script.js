@@ -429,7 +429,7 @@ function submitFormData(form) {
 
 function showSuccessMessage() {
     const form = document.querySelector('form');
-    const successBlock = document.querySelector('.success-block');
+    const endMessage = document.querySelector('.end');
     
     // Hide form with animation
     form.style.transition = 'opacity 0.5s ease';
@@ -437,15 +437,12 @@ function showSuccessMessage() {
     
     setTimeout(() => {
         form.style.display = 'none';
-        successBlock.style.display = 'block';
-        successBlock.style.opacity = '0';
+        endMessage.style.display = 'block';
+        endMessage.style.opacity = '0';
         
         setTimeout(() => {
-            successBlock.style.transition = 'opacity 0.5s ease';
-            successBlock.style.opacity = '1';
-            
-            // Scroll to top smoothly
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            endMessage.style.transition = 'opacity 0.5s ease';
+            endMessage.style.opacity = '1';
         }, 100);
     }, 500);
 }
