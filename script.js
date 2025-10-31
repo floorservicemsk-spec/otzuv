@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Activate first step
     activateStep(1);
     
+    // Initialize phone mask
+    initPhoneMask();
+    
     // Star rating functionality
     initStarRating();
     
@@ -22,6 +25,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Input validation for step completion
     initStepValidation();
 });
+
+// Initialize phone mask
+function initPhoneMask() {
+    const phoneInput = document.getElementById('phone-input');
+    if (phoneInput) {
+        const phoneMask = IMask(phoneInput, {
+            mask: '+{7} (000) 000-00-00',
+            lazy: false,
+            placeholderChar: '_'
+        });
+    }
+}
 
 // Activate a specific step
 function activateStep(stepNumber) {
