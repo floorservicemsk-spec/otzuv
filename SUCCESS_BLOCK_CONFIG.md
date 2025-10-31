@@ -2,53 +2,76 @@
 
 Этот документ описывает, как настроить блок, который показывается после успешной активации гарантии.
 
-## Структура блока
-
-Блок состоит из трёх частей:
-1. **Hero-блок** (светло-серый фон) — заголовок слева, иллюстрация справа
-2. **Подзаголовок** — центрированный текст
-3. **Три карточки** — в ряд с иллюстрациями и кнопками
-
 ## Расположение кода
 
 Блок находится в файле `warranty.html`, в самом конце формы (строка ~357).
 
+## Структура блока
+
+```html
+<div class="success-block" style="display: none;">
+    <div class="success-header">
+        <!-- Иконка/картинка слева -->
+        <div class="success-icon">
+            <img src="images/success-icon.png" alt="Успех">
+        </div>
+        
+        <!-- Текст справа -->
+        <div class="success-text">
+            <h1>Заголовок</h1>
+            <p>Подзаголовок</p>
+        </div>
+    </div>
+
+    <!-- Три карточки -->
+    <div class="success-cards">
+        <a href="/ссылка1" class="success-card">...</a>
+        <a href="/ссылка2" class="success-card">...</a>
+        <a href="/ссылка3" class="success-card">...</a>
+    </div>
+</div>
+```
+
 ---
 
-## 1. Изменение Hero-блока
+## 1. Изменение основной иконки/картинки
+
+### Вариант А: Использовать свою картинку
+
+Замените путь к изображению:
+```html
+<img src="images/success-icon.png" alt="Успех" class="success-image">
+```
+
+На:
+```html
+<img src="images/ваша-картинка.png" alt="Успех" class="success-image">
+```
+
+**Рекомендуемый размер:** 120x120px, PNG с прозрачным фоном
+
+### Вариант Б: Использовать иконку галочки (по умолчанию)
+
+Удалите тег `<img>`, останется только:
+```html
+<div class="success-icon">
+    <!-- Автоматически появится зеленая галочка ✓ -->
+</div>
+```
+
+---
+
+## 2. Изменение текста
 
 ### Заголовок
-
-Найдите в HTML:
 ```html
-<h1 class="success-hero-title">СПАСИБО!<br>ГАРАНТИЙНЫЙ ТАЛОН<br>АКТИВИРОВАН</h1>
+<h1 class="success-title">Ваш новый заголовок</h1>
 ```
 
-Измените текст на свой. Используйте `<br>` для переноса строк.
-
-### Иллюстрация справа
-
+### Подзаголовок
 ```html
-<img src="images/success-hero.png" alt="Успех">
+<p class="success-subtitle">Ваш новый текст подзаголовка</p>
 ```
-
-Замените `success-hero.png` на свою картинку.
-
-**Рекомендуемый размер:** 400-500px по ширине, PNG с прозрачным фоном
-
----
-
-## 2. Изменение подзаголовка
-
-Найдите:
-```html
-<p class="success-subtitle-text">
-    Пока мы активируем для вас гарантию,<br>
-    вы можете найти кое-что интересное здесь:
-</p>
-```
-
-Измените текст на свой. `<br>` делает перенос строки.
 
 ---
 
@@ -57,59 +80,79 @@
 Каждая карточка имеет такую структуру:
 
 ```html
-<a href="/ссылка" class="success-card-link">
-    <div class="success-card">
-        <!-- Заголовок -->
-        <h3 class="success-card-title">Заголовок<br>в две строки</h3>
-        
-        <!-- Картинка -->
-        <div class="success-card-image-container">
-            <img src="images/card-1.png" alt="Описание" class="success-card-img">
-        </div>
-        
-        <!-- Кнопка-стрелка (автоматическая) -->
-        <div class="success-card-button">
-            <span class="success-card-arrow">→</span>
-        </div>
+<a href="/ссылка" class="success-card" target="_blank">
+    <!-- Картинка карточки -->
+    <div class="success-card-image" 
+         style="background-image: url('images/картинка.jpg');"></div>
+    
+    <!-- Содержимое -->
+    <div class="success-card-content">
+        <h3 class="success-card-title">Заголовок карточки</h3>
+        <p class="success-card-description">Описание карточки</p>
     </div>
+    
+    <!-- Стрелка (автоматическая) -->
+    <div class="success-card-arrow">→</div>
 </a>
 ```
 
-### 3.1. Карточка 1
+### 3.1. Карточка 1 - Новинки
 
 **Изменить ссылку:**
 ```html
-<a href="/novosti" class="success-card-link">
+<a href="/novинки" class="success-card" target="_blank">
 ```
-Замените `/novosti` на нужный URL
+Замените `/novинки` на нужный URL
 
 **Изменить картинку:**
 ```html
-<img src="images/card-1.png" alt="Новости" class="success-card-img">
+style="background-image: url('images/card-new.jpg');"
 ```
-Замените `card-1.png` на вашу картинку
+Замените `card-new.jpg` на вашу картинку
 
-**Рекомендуемый размер:** 250-350px, PNG с прозрачным фоном
+**Рекомендуемый размер:** 400x300px
 
-**Изменить заголовок:**
+**Изменить текст:**
 ```html
-<h3 class="success-card-title">Новости<br>и акции</h3>
+<h3 class="success-card-title">Новинки</h3>
+<p class="success-card-description">Ознакомьтесь с нашими последними поступлениями</p>
 ```
-Используйте `<br>` для переноса на новую строку
 
-### 3.2. Карточка 2
+### 3.2. Карточка 2 - Полезные статьи
 
-Аналогично карточке 1:
-- Ссылка: `<a href="/articles" class="success-card-link">`
-- Картинка: `<img src="images/card-2.png" ...>`
-- Заголовок: `<h3 class="success-card-title">Полезные<br>статьи</h3>`
+**Изменить ссылку:**
+```html
+<a href="/articles" class="success-card" target="_blank">
+```
 
-### 3.3. Карточка 3
+**Изменить картинку:**
+```html
+style="background-image: url('images/card-articles.jpg');"
+```
 
-Аналогично:
-- Ссылка: `<a href="/catalog" class="success-card-link">`
-- Картинка: `<img src="images/card-3.png" ...>`
-- Заголовок: `<h3 class="success-card-title">Новинки<br>в каталоге</h3>`
+**Изменить текст:**
+```html
+<h3 class="success-card-title">Полезные статьи</h3>
+<p class="success-card-description">Советы по уходу и эксплуатации покрытий</p>
+```
+
+### 3.3. Карточка 3 - Условия гарантии
+
+**Изменить ссылку:**
+```html
+<a href="/garantiya" class="success-card" target="_blank">
+```
+
+**Изменить картинку:**
+```html
+style="background-image: url('images/card-warranty.jpg');"
+```
+
+**Изменить текст:**
+```html
+<h3 class="success-card-title">Условия гарантии</h3>
+<p class="success-card-description">Подробная информация о гарантийных условиях</p>
+```
 
 ---
 
