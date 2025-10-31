@@ -356,45 +356,63 @@
 
             <!-- Success message after form submission -->
             <div class="success-block" style="display: none;">
-                <div class="success-header">
-                    <div class="success-icon">
-                        <img src="images/success-icon.png" alt="Успех" class="success-image">
+                <!-- A. Hero-блок -->
+                <div class="success-hero">
+                    <div class="success-hero-text">
+                        <h1 class="success-hero-title">СПАСИБО!<br>ГАРАНТИЙНЫЙ ТАЛОН<br>АКТИВИРОВАН</h1>
                     </div>
-                    <div class="success-text">
-                        <h1 class="success-title">Спасибо! Гарантийный талон активирован</h1>
-                        <p class="success-subtitle">Пока мы активируем для вас гарантию, вы можете найти кое-что интересное здесь:</p>
+                    <div class="success-hero-image">
+                        <img src="images/success-hero.png" alt="Успех">
                     </div>
                 </div>
 
-                <div class="success-cards">
-                    <!-- Карточка 1: Новинки -->
-                    <a href="/novинки" class="success-card" target="_blank">
-                        <div class="success-card-image" style="background-image: url('images/card-new.jpg');"></div>
-                        <div class="success-card-content">
-                            <h3 class="success-card-title">Новинки</h3>
-                            <p class="success-card-description">Ознакомьтесь с нашими последними поступлениями</p>
+                <!-- B. Подзаголовок -->
+                <div class="success-subtitle-block">
+                    <p class="success-subtitle-text">
+                        Пока мы активируем для вас гарантию,<br>
+                        вы можете найти кое-что интересное здесь:
+                    </p>
+                </div>
+
+                <!-- C. Три карточки -->
+                <div class="success-cards-grid">
+                    <!-- Карточка 1 -->
+                    <a href="/novosti" class="success-card-link">
+                        <div class="success-card">
+                            <h3 class="success-card-title">Новости<br>и акции</h3>
+                            <div class="success-card-image-container">
+                                <img src="images/card-1.png" alt="Новости" class="success-card-img">
+                            </div>
+                            <div class="success-card-button">
+                                <span class="success-card-arrow">→</span>
+                            </div>
                         </div>
-                        <div class="success-card-arrow">→</div>
                     </a>
 
-                    <!-- Карточка 2: Полезные статьи -->
-                    <a href="/articles" class="success-card" target="_blank">
-                        <div class="success-card-image" style="background-image: url('images/card-articles.jpg');"></div>
-                        <div class="success-card-content">
-                            <h3 class="success-card-title">Полезные статьи</h3>
-                            <p class="success-card-description">Советы по уходу и эксплуатации покрытий</p>
+                    <!-- Карточка 2 -->
+                    <a href="/articles" class="success-card-link">
+                        <div class="success-card">
+                            <h3 class="success-card-title">Полезные<br>статьи</h3>
+                            <div class="success-card-image-container">
+                                <img src="images/card-2.png" alt="Статьи" class="success-card-img">
+                            </div>
+                            <div class="success-card-button">
+                                <span class="success-card-arrow">→</span>
+                            </div>
                         </div>
-                        <div class="success-card-arrow">→</div>
                     </a>
 
-                    <!-- Карточка 3: Условия гарантии -->
-                    <a href="/garantiya" class="success-card" target="_blank">
-                        <div class="success-card-image" style="background-image: url('images/card-warranty.jpg');"></div>
-                        <div class="success-card-content">
-                            <h3 class="success-card-title">Условия гарантии</h3>
-                            <p class="success-card-description">Подробная информация о гарантийных условиях</p>
+                    <!-- Карточка 3 -->
+                    <a href="/catalog" class="success-card-link">
+                        <div class="success-card">
+                            <h3 class="success-card-title">Новинки<br>в каталоге</h3>
+                            <div class="success-card-image-container">
+                                <img src="images/card-3.png" alt="Каталог" class="success-card-img">
+                            </div>
+                            <div class="success-card-button">
+                                <span class="success-card-arrow">→</span>
+                            </div>
                         </div>
-                        <div class="success-card-arrow">→</div>
                     </a>
                 </div>
             </div>
