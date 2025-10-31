@@ -10,6 +10,11 @@ $subject = "Новая активация гарантии";
 $telegram_bot_token = "YOUR_BOT_TOKEN_HERE"; // Замените на токен вашего бота
 $telegram_chat_id = "YOUR_CHAT_ID_HERE"; // Замените на chat_id или @username
 
+// Настройки Google Sheets
+// ВАЖНО: Замените на URL вашего Google Apps Script Web App
+// Инструкция по настройке в файле GOOGLE_SHEETS_SETUP.md
+$google_sheets_url = "YOUR_GOOGLE_SCRIPT_URL_HERE";
+
 // Проверка метода запроса
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     http_response_code(405);
@@ -154,6 +159,27 @@ $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 $headers .= "From: Форма гарантии <noreply@yourdomain.com>" . "\r\n";
 $headers .= "Reply-To: " . ($phone ?: 'noreply@yourdomain.com') . "\r\n";
 
+// Функция отправки данных в Google Sheets
+function sendToGoogleSheets($url, $data) {
+    if (empty($url) || $url === "YOUR_GOOGLE_SCRIPT_URL_HERE") {
+        return false;
+    }
+    
+    $options = array(
+        'http' => array(
+            'header'  => "Content-type: application/json\r\n",
+            'method'  => 'POST',
+            'content' => json_encode($data),
+            'timeout' => 10
+        )
+    );
+    
+    $context = stream_context_create($options);
+    $result = @file_get_contents($url, false, $context);
+    
+    return $result !== false;
+}
+
 // Функция отправки сообщения в Telegram
 function sendTelegramNotification($bot_token, $chat_id, $message) {
     $url = "https://api.telegram.org/bot" . $bot_token . "/sendMessage";
@@ -232,6 +258,27 @@ $telegram_message .= "\n";
 $telegram_message .= "📅 Дата: " . date('d.m.Y H:i:s') . "\n";
 $telegram_message .= "🌐 IP: " . $_SERVER['REMOTE_ADDR'];
 
+// Подготовка данных для Google Sheets
+$sheets_data = array(
+    'timestamp' => date('d.m.Y H:i:s'),
+    'phone' => $phone,
+    'contract' => $contract,
+    'additional_work' => $additional_work,
+    'work_descriptions' => !empty($work_descriptions) ? implode('; ', array_filter($work_descriptions)) : '',
+    'work_costs' => !empty($work_costs) ? implode('; ', array_filter($work_costs)) : '',
+    'sales_rating' => $sales_rating,
+    'sales_feedback' => $sales_feedback_bad,
+    'delivery_rating' => $delivery_rating,
+    'delivery_feedback' => $delivery_feedback_bad,
+    'installation_rating' => $installation_rating,
+    'installation_feedback' => $installation_feedback_bad,
+    'discounts' => !empty($discounts) ? implode(', ', $discounts) : '',
+    'ip_address' => $_SERVER['REMOTE_ADDR']
+);
+
+// Отправка в Google Sheets
+$sheets_sent = sendToGoogleSheets($google_sheets_url, $sheets_data);
+
 // Отправка уведомления в Telegram (если настроены параметры)
 $telegram_sent = false;
 if ($telegram_bot_token !== "YOUR_BOT_TOKEN_HERE" && $telegram_chat_id !== "YOUR_CHAT_ID_HERE") {
@@ -241,15 +288,23 @@ if ($telegram_bot_token !== "YOUR_BOT_TOKEN_HERE" && $telegram_chat_id !== "YOUR
 // Отправка письма
 $email_sent = mail($to_email, $subject, $message, $headers);
 
-if ($email_sent || $telegram_sent) {
+if ($email_sent || $telegram_sent || $sheets_sent) {
     // Успешная отправка хотя бы одним способом
     $response_message = 'Гарантия успешно активирована!';
-    if ($email_sent && $telegram_sent) {
-        $response_message .= ' Уведомления отправлены на почту и в Telegram.';
-    } elseif ($email_sent) {
-        $response_message .= ' Письмо отправлено на почту.';
-    } elseif ($telegram_sent) {
-        $response_message .= ' Уведомление отправлено в Telegram.';
+    $notifications = array();
+    
+    if ($email_sent) {
+        $notifications[] = 'почту';
+    }
+    if ($telegram_sent) {
+        $notifications[] = 'Telegram';
+    }
+    if ($sheets_sent) {
+        $notifications[] = 'Google Таблицы';
+    }
+    
+    if (!empty($notifications)) {
+        $response_message .= ' Данные сохранены: ' . implode(', ', $notifications) . '.';
     }
     
     echo json_encode([
