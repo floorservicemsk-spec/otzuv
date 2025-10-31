@@ -10,7 +10,7 @@ $google_sheets_url = "https://script.google.com/macros/s/AKfycbzVNgTa4xGYhHh0ioK
 // Тестовые данные
 $test_data = array(
     'timestamp' => date('d.m.Y H:i:s'),
-    'phone' => '+7 (999) 123-45-67',
+    'phone' => '7 (999) 123-45-67', // Без + чтобы избежать ошибки формулы в Google Sheets
     'contract' => 'TEST-12345',
     'additional_work' => 'Да',
     'work_descriptions' => 'Тестовая работа 1; Тестовая работа 2',

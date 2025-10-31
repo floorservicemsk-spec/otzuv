@@ -301,7 +301,7 @@ $telegram_message .= "🌐 IP: " . $_SERVER['REMOTE_ADDR'];
 // Подготовка данных для Google Sheets
 $sheets_data = array(
     'timestamp' => date('d.m.Y H:i:s'),
-    'phone' => $phone,
+    'phone' => str_replace('+', '', $phone), // Убираем + чтобы избежать ошибки формулы в Google Sheets
     'contract' => $contract,
     'additional_work' => $additional_work,
     'work_descriptions' => !empty($work_descriptions) ? implode('; ', array_filter($work_descriptions)) : '',
