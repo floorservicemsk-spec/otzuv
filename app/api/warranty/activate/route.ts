@@ -103,6 +103,79 @@ async function saveToCRM(data: any) {
   return true
 }
 
+// Отправка уведомления в Telegram
+async function sendTelegramNotification(data: {
+  warrantyId: string
+  phoneOrContract: string
+  hasExtraWork: boolean
+  extraWork: any[]
+  rates: any
+  discounts: string[]
+  discountsReservedUntil: string
+}) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN
+  const chatId = process.env.TELEGRAM_CHAT_ID
+
+  if (!botToken || !chatId) {
+    console.warn('Telegram credentials not configured')
+    return false
+  }
+
+  try {
+    // Форматирование сообщения
+    const message = `
+🎉 <b>Новая активация гарантии!</b>
+
+📋 <b>Гарантийный талон:</b> ${data.warrantyId}
+📱 <b>Телефон/Договор:</b> ${data.phoneOrContract}
+
+⭐️ <b>Оценки:</b>
+${data.rates.sales ? `• Продавцы: ${'⭐'.repeat(data.rates.sales)}` : ''}
+${data.rates.delivery ? `• Доставка: ${'⭐'.repeat(data.rates.delivery)}` : ''}
+${data.rates.installation ? `• Монтажники: ${'⭐'.repeat(data.rates.installation)}` : ''}
+
+${data.hasExtraWork && data.extraWork.length > 0 ? `
+🔧 <b>Дополнительные работы:</b>
+${data.extraWork.map(work => `• ${work.title}${work.price ? ` - ${work.price} ₽` : ''}`).join('\n')}
+` : ''}
+
+${data.discounts.length > 0 && !data.discounts.includes('none') ? `
+🎁 <b>Забронированные скидки:</b>
+${data.discounts.map(code => `• ${code}`).join('\n')}
+📅 Действительны до: ${data.discountsReservedUntil}
+` : ''}
+
+⏰ <b>Дата активации:</b> ${new Date().toLocaleString('ru-RU')}
+    `.trim()
+
+    const response = await fetch(
+      `https://api.telegram.org/bot${botToken}/sendMessage`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'HTML',
+        }),
+      }
+    )
+
+    if (!response.ok) {
+      const error = await response.json()
+      console.error('Telegram API error:', error)
+      return false
+    }
+
+    return true
+  } catch (error) {
+    console.error('Failed to send Telegram notification:', error)
+    return false
+  }
+}
+
 // Симуляция отправки SMS/Email
 async function sendConfirmation(
   phoneOrContract: string,
@@ -188,6 +261,17 @@ export async function POST(request: NextRequest) {
       validatedData.phone_or_contract,
       warrantyId
     )
+
+    // Отправка уведомления в Telegram
+    await sendTelegramNotification({
+      warrantyId,
+      phoneOrContract: validatedData.phone_or_contract,
+      hasExtraWork: validatedData.has_extra_work,
+      extraWork: validatedData.extra_work,
+      rates: validatedData.rates,
+      discounts: validatedData.discounts,
+      discountsReservedUntil: discountsReservedUntil.toISOString().split('T')[0],
+    })
 
     // Возврат успешного ответа
     return NextResponse.json({
