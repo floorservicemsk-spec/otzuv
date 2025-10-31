@@ -13,7 +13,7 @@ $telegram_chat_id = "YOUR_CHAT_ID_HERE"; // Замените на chat_id или
 // Настройки Google Sheets
 // ВАЖНО: Замените на URL вашего Google Apps Script Web App
 // Инструкция по настройке в файле GOOGLE_SHEETS_SETUP.md
-$google_sheets_url = "YOUR_GOOGLE_SCRIPT_URL_HERE";
+$google_sheets_url = "https://script.google.com/macros/s/AKfycbzVNgTa4xGYhHh0ioKEp2qTtLW2yfdksTacJVf0GziZcpwkWU7BwHUw8_QRxOB1Prsi/exec";
 
 // Проверка метода запроса
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
@@ -165,17 +165,55 @@ function sendToGoogleSheets($url, $data) {
         return false;
     }
     
+    // Попытка использовать cURL (более надёжный метод)
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen(json_encode($data))
+        ));
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        
+        $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+        
+        // Логирование для отладки (можно удалить после настройки)
+        error_log("Google Sheets Response: " . $result);
+        error_log("HTTP Code: " . $httpCode);
+        if ($error) {
+            error_log("CURL Error: " . $error);
+        }
+        
+        return ($httpCode == 200 || $httpCode == 302) && $result !== false;
+    }
+    
+    // Альтернативный метод через file_get_contents
     $options = array(
         'http' => array(
             'header'  => "Content-type: application/json\r\n",
             'method'  => 'POST',
             'content' => json_encode($data),
-            'timeout' => 10
+            'timeout' => 30,
+            'follow_location' => 1
         )
     );
     
     $context = stream_context_create($options);
     $result = @file_get_contents($url, false, $context);
+    
+    // Логирование
+    if ($result === false) {
+        error_log("Google Sheets file_get_contents failed");
+    } else {
+        error_log("Google Sheets Response (file_get_contents): " . $result);
+    }
     
     return $result !== false;
 }
