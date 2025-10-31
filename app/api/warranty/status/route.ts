@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Force dynamic rendering since we use searchParams
+export const dynamic = 'force-dynamic';
+
 // Mock database - would be real in production
 const mockWarranties = new Map<string, any>();
 
