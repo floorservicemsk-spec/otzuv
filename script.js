@@ -38,6 +38,38 @@ function initPhoneMask() {
             lazy: false,
             placeholderChar: '_'
         });
+        
+        // Проверка при потере фокуса
+        phoneInput.addEventListener('blur', function() {
+            const step = this.closest('.step');
+            const errorDiv = step?.querySelector('.red-error');
+            
+            if (this.value.trim() !== '' && this.value.includes('_')) {
+                // Номер заполнен не полностью
+                this.classList.add('error');
+                if (errorDiv) {
+                    errorDiv.textContent = 'Пожалуйста, заполните номер телефона полностью';
+                    errorDiv.style.display = 'block';
+                }
+            } else {
+                this.classList.remove('error');
+                if (errorDiv && !this.value.includes('_')) {
+                    errorDiv.style.display = 'none';
+                }
+            }
+        });
+        
+        // Убираем ошибку при вводе
+        phoneInput.addEventListener('input', function() {
+            if (!this.value.includes('_') && this.value.trim() !== '') {
+                this.classList.remove('error');
+                const step = this.closest('.step');
+                const errorDiv = step?.querySelector('.red-error');
+                if (errorDiv) {
+                    errorDiv.style.display = 'none';
+                }
+            }
+        });
     }
 }
 
@@ -230,7 +262,15 @@ function markStepCompleted(element) {
         const inputs = step.querySelectorAll('input[data-step]');
         inputs.forEach(input => {
             if (input.value.trim() !== '') {
-                isCompleted = true;
+                // Для телефона проверяем, что все цифры заполнены (нет символов _)
+                if (input.name === 'phone') {
+                    // Проверяем, что нет незаполненных позиций маски (_)
+                    if (!input.value.includes('_')) {
+                        isCompleted = true;
+                    }
+                } else {
+                    isCompleted = true;
+                }
             }
         });
     } else if (stepType === 'radio') {
@@ -303,7 +343,15 @@ function initFormSubmission() {
                 const inputs = step.querySelectorAll('input[data-step]');
                 inputs.forEach(input => {
                     if (input.value.trim() !== '') {
-                        isValid = true;
+                        // Для телефона проверяем полноту заполнения
+                        if (input.name === 'phone') {
+                            // Если телефон заполнен И все цифры введены (нет _)
+                            if (!input.value.includes('_')) {
+                                isValid = true;
+                            }
+                        } else {
+                            isValid = true;
+                        }
                     }
                 });
             } else if (stepType === 'radio') {

@@ -227,6 +227,11 @@ body {
     box-shadow: 0 4px 20px rgba(191, 8, 26, 0.15);
 }
 
+.input input.error {
+    border-color: #BF081A;
+    background: rgba(191, 8, 26, 0.05);
+}
+
 .input-or {
     text-align: center;
     color: #999;
