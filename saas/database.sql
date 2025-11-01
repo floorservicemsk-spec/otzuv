@@ -8,20 +8,6 @@ SET time_zone = "+00:00";
 CREATE DATABASE IF NOT EXISTS `warranty_saas` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `warranty_saas`;
 
--- Отключаем проверку внешних ключей для безопасного удаления
-SET FOREIGN_KEY_CHECKS = 0;
-
--- Удаляем существующие таблицы (в правильном порядке)
-DROP TABLE IF EXISTS `activity_logs`;
-DROP TABLE IF EXISTS `sessions`;
-DROP TABLE IF EXISTS `form_submissions`;
-DROP TABLE IF EXISTS `form_integrations`;
-DROP TABLE IF EXISTS `form_design`;
-DROP TABLE IF EXISTS `users`;
-
--- Включаем проверку внешних ключей обратно
-SET FOREIGN_KEY_CHECKS = 1;
-
 -- --------------------------------------------------------
 
 -- Таблица пользователей
@@ -169,8 +155,6 @@ CREATE INDEX idx_submissions_user_date ON form_submissions(user_id, submitted_at
 -- Триггер для создания настроек по умолчанию при создании пользователя
 DELIMITER $$
 
-DROP TRIGGER IF EXISTS after_user_insert$$
-
 CREATE TRIGGER after_user_insert
 AFTER INSERT ON users
 FOR EACH ROW
@@ -187,8 +171,6 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 -- Представление для статистики пользователя
-DROP VIEW IF EXISTS user_stats;
-
 CREATE VIEW user_stats AS
 SELECT 
     u.id as user_id,
@@ -206,8 +188,6 @@ GROUP BY u.id;
 
 -- Процедура очистки устаревших сессий
 DELIMITER $$
-
-DROP PROCEDURE IF EXISTS cleanup_expired_sessions$$
 
 CREATE PROCEDURE cleanup_expired_sessions()
 BEGIN
