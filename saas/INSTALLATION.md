@@ -170,16 +170,23 @@ A     subdomain2.yourservice.com    -> ваш_IP
 ## 👤 Шаг 8: Создание администратора
 
 По умолчанию создается администратор:
-- **Email**: `admin@yourservice.com`
-- **Пароль**: `admin123`
+- **Email**: `sundoze87@gmail.com`
+- **Пароль**: `nifrit2303!@#`
 
-⚠️ **ВАЖНО**: Измените пароль сразу после первого входа!
+⚠️ **ВАЖНО**: После импорта database.sql выполните настройку:
 
-```sql
-UPDATE users 
-SET password = PASSWORD_HASH 
-WHERE email = 'admin@yourservice.com';
+```bash
+php setup_admin.php
 ```
+
+Или вручную:
+
+```bash
+HASH=$(php -r "echo password_hash('nifrit2303!@#', PASSWORD_BCRYPT);")
+mysql -u warranty_user -p warranty_saas -e "UPDATE users SET email='sundoze87@gmail.com', password='$HASH' WHERE role='admin';"
+```
+
+Подробнее: [ADMIN_SETUP.md](ADMIN_SETUP.md)
 
 Или войдите через `/login.php` и измените пароль в интерфейсе.
 
