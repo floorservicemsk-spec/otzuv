@@ -74,8 +74,8 @@ ufw enable
 ## 🔑 Дефолтный логин
 
 ```
-Email: admin@yourservice.com
-Password: admin123
+Email: sundoze87@gmail.com
+Password: nifrit2303!@#
 ```
 
 ⚠️ **Сразу смените пароль!**

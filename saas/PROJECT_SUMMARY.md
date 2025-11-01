@@ -253,8 +253,8 @@
 ### Первый вход:
 ```
 URL: https://yourservice.com/login.php
-Email: admin@yourservice.com
-Password: admin123
+Email: sundoze87@gmail.com
+Password: nifrit2303!@#
 ```
 
 ⚠️ **Важно**: сразу смените пароль администратора!

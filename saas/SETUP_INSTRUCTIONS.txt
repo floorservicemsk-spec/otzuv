@@ -85,8 +85,8 @@
 
 ► ШАГ 6: Первый вход
    http://warranty.local/login.php
-   Email: admin@yourservice.com
-   Password: admin123
+   Email: sundoze87@gmail.com
+   Password: nifrit2303!@#
    
    ⚠️ СРАЗУ СМЕНИТЕ ПАРОЛЬ!
 
@@ -226,8 +226,8 @@
 ► ШАГ 13: Первый вход
    
    https://yourservice.com/login.php
-   Email: admin@yourservice.com
-   Password: admin123
+   Email: sundoze87@gmail.com
+   Password: nifrit2303!@#
    
    ⚠️ СРАЗУ СМЕНИТЕ ПАРОЛЬ!
 
@@ -293,8 +293,8 @@
 ► ШАГ 7: Первый вход
    
    https://yourservice.com/warranty-saas/login.php
-   Email: admin@yourservice.com
-   Password: admin123
+   Email: sundoze87@gmail.com
+   Password: nifrit2303!@#
 
 ✅ SHARED ХОСТИНГ ГОТОВ!
 
@@ -401,8 +401,8 @@
 
    Администратор:
    ──────────────────────
-   Email: admin@yourservice.com
-   Password: admin123
+   Email: sundoze87@gmail.com
+   Password: nifrit2303!@#
    
    ⚠️ ОБЯЗАТЕЛЬНО СМЕНИТЕ ПАРОЛЬ ПОСЛЕ ВХОДА!
 
