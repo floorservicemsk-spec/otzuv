@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Activate first step
     activateStep(1);
     
+    // Initialize phone mask
+    initPhoneMask();
+    
     // Star rating functionality
     initStarRating();
     
@@ -21,7 +24,54 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Input validation for step completion
     initStepValidation();
+    
+    // Submit button control
+    initSubmitButtonControl();
 });
+
+// Initialize phone mask
+function initPhoneMask() {
+    const phoneInput = document.getElementById('phone-input');
+    if (phoneInput) {
+        const phoneMask = IMask(phoneInput, {
+            mask: '+{7} (000) 000-00-00',
+            lazy: false,
+            placeholderChar: '_'
+        });
+        
+        // Проверка при потере фокуса
+        phoneInput.addEventListener('blur', function() {
+            const step = this.closest('.step');
+            const errorDiv = step?.querySelector('.red-error');
+            
+            if (this.value.trim() !== '' && this.value.includes('_')) {
+                // Номер заполнен не полностью
+                this.classList.add('error');
+                if (errorDiv) {
+                    errorDiv.textContent = 'Пожалуйста, заполните номер телефона полностью';
+                    errorDiv.style.display = 'block';
+                }
+            } else {
+                this.classList.remove('error');
+                if (errorDiv && !this.value.includes('_')) {
+                    errorDiv.style.display = 'none';
+                }
+            }
+        });
+        
+        // Убираем ошибку при вводе
+        phoneInput.addEventListener('input', function() {
+            if (!this.value.includes('_') && this.value.trim() !== '') {
+                this.classList.remove('error');
+                const step = this.closest('.step');
+                const errorDiv = step?.querySelector('.red-error');
+                if (errorDiv) {
+                    errorDiv.style.display = 'none';
+                }
+            }
+        });
+    }
+}
 
 // Activate a specific step
 function activateStep(stepNumber) {
@@ -212,7 +262,15 @@ function markStepCompleted(element) {
         const inputs = step.querySelectorAll('input[data-step]');
         inputs.forEach(input => {
             if (input.value.trim() !== '') {
-                isCompleted = true;
+                // Для телефона проверяем, что все цифры заполнены (нет символов _)
+                if (input.name === 'phone') {
+                    // Проверяем, что нет незаполненных позиций маски (_)
+                    if (!input.value.includes('_')) {
+                        isCompleted = true;
+                    }
+                } else {
+                    isCompleted = true;
+                }
             }
         });
     } else if (stepType === 'radio') {
@@ -285,7 +343,15 @@ function initFormSubmission() {
                 const inputs = step.querySelectorAll('input[data-step]');
                 inputs.forEach(input => {
                     if (input.value.trim() !== '') {
-                        isValid = true;
+                        // Для телефона проверяем полноту заполнения
+                        if (input.name === 'phone') {
+                            // Если телефон заполнен И все цифры введены (нет _)
+                            if (!input.value.includes('_')) {
+                                isValid = true;
+                            }
+                        } else {
+                            isValid = true;
+                        }
                     }
                 });
             } else if (stepType === 'radio') {
@@ -379,6 +445,24 @@ function showSuccessMessage() {
             endMessage.style.opacity = '1';
         }, 100);
     }, 500);
+}
+
+// Submit button control based on consent checkbox
+function initSubmitButtonControl() {
+    const consentCheckbox = document.getElementById('consent');
+    const submitButton = document.getElementById('submit-btn');
+    
+    if (consentCheckbox && submitButton) {
+        // Initial state is disabled (set in HTML)
+        
+        consentCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        });
+    }
 }
 
 // "Nothing needed" checkbox functionality
