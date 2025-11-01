@@ -79,11 +79,11 @@ saas/
 ```
 https://yourservice.com/login.php
 
-Email: admin@yourservice.com
-Password: admin123
+Email: sundoze87@gmail.com
+Password: nifrit2303!@#
 ```
 
-⚠️ **СРАЗУ СМЕНИТЕ ПАРОЛЬ!**
+⚠️ **ВАЖНО**: После импорта database.sql выполните `php setup_admin.php` (см. [ADMIN_SETUP.md](ADMIN_SETUP.md))
 
 ---
 

@@ -217,14 +217,30 @@ sudo systemctl restart apache2
 define('MAIN_DOMAIN', 'warranty.local');
 ```
 
-## Шаг 7: Первый вход
+## Шаг 7: Установите учетные данные администратора
+
+После импорта database.sql выполните:
+
+```bash
+php setup_admin.php
+```
+
+Скопируйте SQL команду из вывода и выполните в phpMyAdmin, или автоматически:
+
+```bash
+HASH=$(php -r "echo password_hash('nifrit2303!@#', PASSWORD_BCRYPT);")
+mysql -u root -p warranty_saas -e "UPDATE users SET email='sundoze87@gmail.com', password='$HASH' WHERE role='admin';"
+```
+
+Подробнее: [ADMIN_SETUP.md](ADMIN_SETUP.md)
+
+## Шаг 8: Первый вход
 
 1. Откройте браузер
 2. Перейдите: `http://warranty.local/login.php`
 3. Войдите:
-   - Email: `admin@yourservice.com`
-   - Password: `admin123`
-4. **СРАЗУ СМЕНИТЕ ПАРОЛЬ!**
+   - Email: `sundoze87@gmail.com`
+   - Password: `nifrit2303!@#`
 
 ## Шаг 8: Создание тестового пользователя
 
@@ -490,13 +506,30 @@ ufw enable
 ufw status
 ```
 
-## Шаг 15: Первый вход
+## Шаг 15: Установите учетные данные администратора
+
+После импорта database.sql:
+
+```bash
+cd /var/www/html/warranty-saas
+php setup_admin.php
+```
+
+Или автоматически:
+
+```bash
+HASH=$(php -r "echo password_hash('nifrit2303!@#', PASSWORD_BCRYPT);")
+mysql -u warranty_user -p warranty_saas -e "UPDATE users SET email='sundoze87@gmail.com', password='$HASH' WHERE role='admin';"
+```
+
+Подробнее: [ADMIN_SETUP.md](ADMIN_SETUP.md)
+
+## Шаг 16: Первый вход
 
 1. Откройте: `https://yourservice.com/login.php`
 2. Войдите:
-   - Email: `admin@yourservice.com`
-   - Password: `admin123`
-3. **СРАЗУ СМЕНИТЕ ПАРОЛЬ!**
+   - Email: `sundoze87@gmail.com`
+   - Password: `nifrit2303!@#`
 
 ## Шаг 16: Проверка работы
 
@@ -618,12 +651,27 @@ Options -Indexes
 - Файлы: `644`
 - Папка `uploads`: `775`
 
-## Шаг 9: Первый вход
+## Шаг 9: Установите учетные данные администратора
+
+После импорта через phpMyAdmin выполните SQL:
+
+```sql
+UPDATE users 
+SET email = 'sundoze87@gmail.com', 
+    password = '$2y$10$...' -- вставьте хеш из bcrypt-generator.com
+WHERE role = 'admin';
+```
+
+Используйте https://bcrypt-generator.com/ (password: `nifrit2303!@#`, rounds: 10)
+
+Подробнее: [ADMIN_SETUP.md](ADMIN_SETUP.md)
+
+## Шаг 10: Первый вход
 
 `https://yourservice.com/warranty-saas/login.php`
 
-Email: `admin@yourservice.com`
-Password: `admin123`
+Email: `sundoze87@gmail.com`
+Password: `nifrit2303!@#`
 
 ✅ **Shared хостинг готов!**
 
