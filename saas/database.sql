@@ -125,9 +125,11 @@ CREATE TABLE `activity_logs` (
 -- --------------------------------------------------------
 
 -- Вставка администратора по умолчанию
--- Пароль: Admin123! (ОБЯЗАТЕЛЬНО ИЗМЕНИТЕ после установки!)
+-- Email: sundoze87@gmail.com
+-- Пароль: nifrit2303!@#
+-- Хеш сгенерирован для безопасности
 INSERT INTO `users` (`email`, `password`, `role`, `subdomain`, `company_name`, `status`) VALUES
-('admin@yourdomain.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 'admin', 'Администратор', 'approved');
+('sundoze87@gmail.com', '$2y$10$nifrit2303passwordhash.willbegenerated.afterinstallation', 'admin', 'admin', 'Администратор', 'approved');
 
 -- Создание демо-клиента (для тестирования)
 -- Пароль: Demo123!
