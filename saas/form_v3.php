@@ -3,6 +3,12 @@
  * Форма гарантии с фиксированной структурой (Версия 3.0)
  * Структура из warranty.html, но с редактируемыми labels
  */
+
+// Включаем отображение ошибок для отладки
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 define('SAAS_SYSTEM', true);
 require_once 'config.php';
 
@@ -27,21 +33,38 @@ $stmt = $pdo->prepare("SELECT * FROM form_design WHERE user_id = ?");
 $stmt->execute([$user['id']]);
 $design = $stmt->fetch();
 
-// Получение labels для шагов
-$stmt = $pdo->prepare("SELECT * FROM form_labels WHERE user_id = ? ORDER BY step_number ASC");
-$stmt->execute([$user['id']]);
-$labels_raw = $stmt->fetchAll();
-
-// Индексирование labels по номеру шага
+// Получение labels для шагов (с проверкой существования таблицы)
 $labels = [];
-foreach ($labels_raw as $label) {
-    $labels[$label['step_number']] = $label;
+try {
+    $stmt = $pdo->prepare("SELECT * FROM form_labels WHERE user_id = ? ORDER BY step_number ASC");
+    $stmt->execute([$user['id']]);
+    $labels_raw = $stmt->fetchAll();
+    
+    // Индексирование labels по номеру шага
+    foreach ($labels_raw as $label) {
+        $labels[$label['step_number']] = $label;
+    }
+} catch (PDOException $e) {
+    // Таблица form_labels не существует - используем дефолтные значения
+    $labels = [];
 }
 
-// Получение карточек скидок
-$stmt = $pdo->prepare("SELECT * FROM discount_cards WHERE user_id = ? AND is_enabled = 1 ORDER BY card_order ASC");
-$stmt->execute([$user['id']]);
-$discount_cards = $stmt->fetchAll();
+// Получение карточек скидок (с проверкой существования таблицы)
+$discount_cards = [];
+try {
+    $stmt = $pdo->prepare("SELECT * FROM discount_cards WHERE user_id = ? AND is_enabled = 1 ORDER BY card_order ASC");
+    $stmt->execute([$user['id']]);
+    $discount_cards = $stmt->fetchAll();
+} catch (PDOException $e) {
+    // Таблица discount_cards не существует - используем дефолтные карточки
+    $discount_cards = [
+        ['card_title' => 'Клей', 'card_text' => 'Скидка 10%', 'card_value' => 'Клей', 'card_image' => '/images/glue.jpg'],
+        ['card_title' => 'Плинтус', 'card_text' => 'Скидка 5%', 'card_value' => 'Плинтус', 'card_image' => '/images/baseboard.jpg'],
+        ['card_title' => 'Подложка', 'card_text' => 'Скидка 5%', 'card_value' => 'Подложка', 'card_image' => '/images/underlay.jpg'],
+        ['card_title' => 'Грунтовка', 'card_text' => 'Скидка 10%', 'card_value' => 'Грунтовка', 'card_image' => '/images/primer.jpg'],
+        ['card_title' => 'Укладка', 'card_text' => 'Скидка 30%', 'card_value' => 'Укладка', 'card_image' => '/images/installation.jpg'],
+    ];
+}
 
 // Получение настроек интеграций
 $stmt = $pdo->prepare("SELECT * FROM form_integrations WHERE user_id = ?");
