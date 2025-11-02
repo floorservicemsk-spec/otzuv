@@ -14,6 +14,14 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([$_SESSION['user_id']]);
 $submissions = $stmt->fetchAll();
+
+// Получение полей для отображения названий
+$stmt = $pdo->prepare("SELECT field_key, field_label FROM form_fields WHERE user_id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$fields_map = [];
+foreach ($stmt->fetchAll() as $field) {
+    $fields_map[$field['field_key']] = $field['field_label'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -24,39 +32,65 @@ $submissions = $stmt->fetchAll();
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <style>
         .submissions-table {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .submission-card {
             background: white;
-            border-radius: 16px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
-            overflow: hidden;
+            padding: 20px;
+            transition: all 0.3s ease;
         }
         
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .submission-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
-        thead {
-            background: var(--bg-primary);
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
         }
         
-        th {
-            padding: 16px;
-            text-align: left;
-            font-weight: 600;
+        .submission-header strong {
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+        
+        .submission-date {
             font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .submission-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+        }
+        
+        .data-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .data-label {
+            font-size: 12px;
+            font-weight: 600;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         
-        td {
-            padding: 16px;
-            border-top: 1px solid var(--border-color);
-            font-size: 14px;
-        }
-        
-        tr:hover {
-            background: var(--bg-primary);
+        .data-value {
+            font-size: 15px;
+            color: var(--text-primary);
         }
         
         .rating-stars {
@@ -130,34 +164,32 @@ $submissions = $stmt->fetchAll();
                 </div>
             <?php else: ?>
                 <div class="submissions-table">
-                    <table id="submissions-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Дата и время</th>
-                                <th>Телефон</th>
-                                <th>Имя</th>
-                                <th>Email</th>
-                                <th>Продажи</th>
-                                <th>Доставка</th>
-                                <th>Монтаж</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($submissions as $submission): ?>
-                            <tr>
-                                <td><?= $submission['id'] ?></td>
-                                <td><?= date('d.m.Y H:i', strtotime($submission['submitted_at'])) ?></td>
-                                <td><?= h($submission['phone']) ?></td>
-                                <td><?= h($submission['name']) ?></td>
-                                <td><?= h($submission['email']) ?></td>
-                                <td><span class="rating-stars"><?= str_repeat('★', $submission['sales_rating']) ?></span></td>
-                                <td><span class="rating-stars"><?= str_repeat('★', $submission['delivery_rating']) ?></span></td>
-                                <td><span class="rating-stars"><?= str_repeat('★', $submission['installation_rating']) ?></span></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                    <?php foreach ($submissions as $submission): 
+                        $data = json_decode($submission['form_data'], true);
+                    ?>
+                        <div class="submission-card">
+                            <div class="submission-header">
+                                <strong>#<?= $submission['id'] ?></strong>
+                                <span class="submission-date"><?= date('d.m.Y H:i', strtotime($submission['submitted_at'])) ?></span>
+                            </div>
+                            <div class="submission-data">
+                                <?php if ($data): ?>
+                                    <?php foreach ($data as $key => $value): ?>
+                                        <div class="data-row">
+                                            <span class="data-label"><?= h($fields_map[$key] ?? $key) ?>:</span>
+                                            <span class="data-value">
+                                                <?php if (strpos($key, 'rating') !== false): ?>
+                                                    <span class="rating-stars"><?= str_repeat('★', (int)$value) ?></span>
+                                                <?php else: ?>
+                                                    <?= h($value) ?>
+                                                <?php endif; ?>
+                                            </span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             <?php endif; ?>
         </div>

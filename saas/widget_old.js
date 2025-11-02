@@ -1,25 +1,22 @@
 /**
- * Виджет для встраивания формы (Версия 2.0 - с form_id)
- * Использование: <script src="https://yourservice.com/widget.js?form=abc123xyz"></script>
+ * Виджет для встраивания формы на сайт клиента
+ * Адаптировано из warranty-widget.js
  */
 
 (function() {
     'use strict';
     
-    // Получение form_id из параметра скрипта
-    const scriptElement = document.currentScript || document.querySelector('script[src*="widget"]');
+    // Получение поддомена из URL скрипта
+    const scriptElement = document.currentScript || document.querySelector('script[src*="widget.js"]');
     const scriptSrc = scriptElement ? scriptElement.src : '';
-    const urlParams = new URLSearchParams(scriptSrc.split('?')[1] || '');
-    const formId = urlParams.get('form') || scriptElement?.getAttribute('data-form-id');
+    const subdomain = scriptSrc.match(/\/\/([^.]+)\./)?.[1] || '';
     
-    if (!formId) {
-        console.error('Warranty Widget: form ID not specified. Use ?form=YOUR_FORM_ID or data-form-id attribute');
+    if (!subdomain || subdomain === 'www') {
+        console.error('Warranty Widget: Unable to determine subdomain');
         return;
     }
     
-    // Определяем base URL
-    const baseUrl = scriptSrc.split('/widget')[0] || window.location.origin;
-    const formUrl = `${baseUrl}/form.php?id=${formId}`;
+    const formUrl = scriptSrc.replace('/widget.js', '/form.php');
     
     // Конфигурация по умолчанию
     const defaultConfig = {
@@ -181,11 +178,7 @@
         open: () => button.onclick(),
         close: closeModal,
         show: () => { button.style.display = 'block'; },
-        hide: () => { button.style.display = 'none'; },
-        getFormId: () => formId,
-        getFormUrl: () => formUrl
+        hide: () => { button.style.display = 'none'; }
     };
-    
-    console.log(`Warranty Widget loaded. Form ID: ${formId}`);
     
 })();
