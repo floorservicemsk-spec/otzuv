@@ -11,6 +11,13 @@
             </a>
         </li>
         
+        <li class="menu-item <?= basename($_SERVER['PHP_SELF']) === 'fields.php' ? 'active' : '' ?>">
+            <a href="fields.php">
+                <span class="menu-icon">📋</span>
+                <span class="menu-text">Поля формы</span>
+            </a>
+        </li>
+        
         <li class="menu-item <?= basename($_SERVER['PHP_SELF']) === 'design.php' ? 'active' : '' ?>">
             <a href="design.php">
                 <span class="menu-icon">🎨</span>
