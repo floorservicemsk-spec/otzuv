@@ -16,7 +16,7 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('admin','client') NOT NULL DEFAULT 'client',
-  `subdomain` varchar(100) NOT NULL,
+  `form_id` varchar(32) NOT NULL COMMENT 'Уникальный ID формы для URL',
   `company_name` varchar(255) DEFAULT NULL,
   `status` enum('pending','approved','rejected','suspended') NOT NULL DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -24,7 +24,7 @@ CREATE TABLE `users` (
   `last_login` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `subdomain` (`subdomain`),
+  UNIQUE KEY `form_id` (`form_id`),
   KEY `status` (`status`),
   KEY `role` (`role`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
