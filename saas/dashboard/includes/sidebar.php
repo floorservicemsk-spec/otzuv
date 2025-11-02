@@ -11,12 +11,19 @@
             </a>
         </li>
         
-        <li class="menu-item <?= basename($_SERVER['PHP_SELF']) === 'fields.php' ? 'active' : '' ?>">
-            <a href="fields.php">
-                <span class="menu-icon">📋</span>
-                <span class="menu-text">Поля формы</span>
-            </a>
-        </li>
+                <li class="menu-item <?= basename($_SERVER['PHP_SELF']) === 'form-labels.php' ? 'active' : '' ?>">
+                    <a href="form-labels.php">
+                        <span class="menu-icon">📋</span>
+                        <span class="menu-text">Названия полей</span>
+                    </a>
+                </li>
+                
+                <li class="menu-item <?= basename($_SERVER['PHP_SELF']) === 'discount-cards.php' ? 'active' : '' ?>">
+                    <a href="discount-cards.php">
+                        <span class="menu-icon">🎁</span>
+                        <span class="menu-text">Карточки товаров</span>
+                    </a>
+                </li>
         
         <li class="menu-item <?= basename($_SERVER['PHP_SELF']) === 'design.php' ? 'active' : '' ?>">
             <a href="design.php">

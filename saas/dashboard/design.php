@@ -22,8 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['logo'])) {
         $file_type = $file['type'];
         $file_size = $file['size'];
         
-        if (!in_array($file_type, ALLOWED_IMAGE_TYPES)) {
-            $error = 'Недопустимый тип файла. Разрешены: JPG, PNG, GIF, WEBP';
+        $allowed_logo_types = array_merge(ALLOWED_IMAGE_TYPES, ['image/svg+xml']);
+        
+        if (!in_array($file_type, $allowed_logo_types)) {
+            $error = 'Недопустимый тип файла. Разрешены: JPG, PNG, GIF, WEBP, SVG';
         } elseif ($file_size > MAX_FILE_SIZE) {
             $error = 'Файл слишком большой. Максимум ' . (MAX_FILE_SIZE / 1024 / 1024) . ' МБ';
         } else {

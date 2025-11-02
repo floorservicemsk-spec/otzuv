@@ -31,8 +31,8 @@ $stmt->execute([$_SESSION['user_id']]);
 $integrations = $stmt->fetch();
 
 // Формирование URL формы
-$form_url = PROTOCOL . MAIN_DOMAIN . '/form.php?id=' . $user['form_id'];
-$widget_url = PROTOCOL . MAIN_DOMAIN . '/widget.js?form=' . $user['form_id'];
+            $form_url = PROTOCOL . MAIN_DOMAIN . '/form_v3.php?id=' . $user['form_id'];
+            $widget_url = PROTOCOL . MAIN_DOMAIN . '/widget.js?form=' . $user['form_id'];
 ?>
 <!DOCTYPE html>
 <html lang="ru">
