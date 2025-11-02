@@ -1,0 +1,469 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                        WARRANTY SAAS - ИНСТРУКЦИЯ ПО ЗАПУСКУ                 ║
+║                                  v1.0.0 - 2025                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ✨ ЧТО ВЫ ПОЛУЧИЛИ                                                           │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+📦 Полнофункциональный SaaS для управления гарантийными формами:
+
+  ✅ 16 PHP файлов (backend)
+  ✅ 6 документов (README, инструкции)
+  ✅ 3 CSS файла (Apple-стиль)
+  ✅ 2 JS файла (интерактивность)
+  ✅ 7,812 строк кода
+
+🎯 Возможности:
+  • Мультитенантность (поддомены для каждого клиента)
+  • Персонализация (логотип, цвета, дизайн)
+  • Интеграции (Email, Telegram, Google Sheets)
+  • Админ-панель (управление пользователями)
+  • Форма активации (7 шагов с рейтингами)
+  • Виджет (встраивание на любой сайт)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🚀 БЫСТРЫЙ СТАРТ (ВЫБЕРИТЕ ВАШ СЦЕНАРИЙ)                                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ СЦЕНАРИЙ A: ЛОКАЛЬНЫЙ ТЕСТОВЫЙ СЕРВЕР (Windows/Mac/Linux)                 ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+📍 Для тестирования на вашем компьютере
+
+► ШАГ 1: Установите XAMPP
+   Windows: https://www.apachefriends.org/download.html
+   Mac: brew install --cask xampp
+   Linux: apt install apache2 mysql-server php
+
+► ШАГ 2: Создайте базу данных
+   1. Откройте http://localhost/phpmyadmin
+   2. Создать базу: warranty_saas (utf8mb4_unicode_ci)
+   3. Импортируйте файл: database.sql
+
+► ШАГ 3: Скопируйте файлы
+   Windows: C:\xampp\htdocs\warranty-saas\
+   Mac: /Applications/XAMPP/htdocs/warranty-saas/
+   Linux: /var/www/html/warranty-saas/
+
+► ШАГ 4: Настройте config.php
+   
+   define('DB_HOST', 'localhost');
+   define('DB_NAME', 'warranty_saas');
+   define('DB_USER', 'root');
+   define('DB_PASS', '');  // Пусто для XAMPP
+   define('MAIN_DOMAIN', 'warranty.local');
+   define('PROTOCOL', 'http://');
+   define('SECRET_KEY', 'сгенерируйте_случайный_ключ_32+_символа');
+
+   💡 Генерация ключа:
+   php -r "echo bin2hex(random_bytes(32));"
+
+► ШАГ 5: Настройте виртуальные хосты (для поддоменов)
+   
+   Windows - hosts файл (C:\Windows\System32\drivers\etc\hosts):
+   ─────────────────────────────────────────────────────────────
+   127.0.0.1    warranty.local
+   127.0.0.1    test.warranty.local
+   127.0.0.1    demo.warranty.local
+   
+   Windows - httpd-vhosts.conf (C:\xampp\apache\conf\extra\):
+   ─────────────────────────────────────────────────────────────
+   <VirtualHost *:80>
+       ServerName warranty.local
+       ServerAlias *.warranty.local
+       DocumentRoot "C:/xampp/htdocs/warranty-saas"
+       <Directory "C:/xampp/htdocs/warranty-saas">
+           AllowOverride All
+           Require all granted
+       </Directory>
+   </VirtualHost>
+   
+   Перезапустите Apache в XAMPP
+
+► ШАГ 6: Первый вход
+   http://warranty.local/login.php
+   Email: sundoze87@gmail.com
+   Password: nifrit2303!@#
+   
+   ⚠️ СРАЗУ СМЕНИТЕ ПАРОЛЬ!
+
+✅ ГОТОВО! Локальный сервер работает!
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ СЦЕНАРИЙ B: VPS СЕРВЕР (Production - Ubuntu 20.04+)                       ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+📍 Для полноценного production запуска
+
+► ШАГ 1: Подключитесь к серверу
+   ssh root@your-server-ip
+
+► ШАГ 2: Установите LAMP
+   
+   apt update && apt upgrade -y
+   apt install apache2 mysql-server php libapache2-mod-php php-mysql php-curl -y
+
+► ШАГ 3: Настройте MySQL
+   
+   mysql_secure_installation
+   
+   Отвечайте:
+   - VALIDATE PASSWORD: Y
+   - Password strength: 2 (strong)
+   - Root password: ваш_надежный_пароль
+   - Remove anonymous users: Y
+   - Disallow root login remotely: Y
+   - Remove test database: Y
+
+► ШАГ 4: Создайте базу данных
+   
+   mysql -u root -p
+   
+   Выполните:
+   ─────────────────────────────────────────────────────────────
+   CREATE DATABASE warranty_saas CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   CREATE USER 'warranty_user'@'localhost' IDENTIFIED BY 'сложный_пароль';
+   GRANT ALL PRIVILEGES ON warranty_saas.* TO 'warranty_user'@'localhost';
+   FLUSH PRIVILEGES;
+   EXIT;
+   ─────────────────────────────────────────────────────────────
+
+► ШАГ 5: Загрузите файлы
+   
+   # Через Git (рекомендуется)
+   cd /var/www/html
+   git clone YOUR_REPO_URL warranty-saas
+   
+   # Или через SCP с вашего компьютера
+   scp -r /workspace/saas root@your-server-ip:/var/www/html/warranty-saas
+
+► ШАГ 6: Импортируйте схему БД
+   
+   mysql -u warranty_user -p warranty_saas < /var/www/html/warranty-saas/database.sql
+
+► ШАГ 7: Настройте config.php
+   
+   nano /var/www/html/warranty-saas/config.php
+   
+   Измените:
+   ─────────────────────────────────────────────────────────────
+   define('DB_USER', 'warranty_user');
+   define('DB_PASS', 'ваш_пароль_из_шага_4');
+   define('MAIN_DOMAIN', 'yourservice.com');  // ВАШ ДОМЕН!
+   define('PROTOCOL', 'https://');
+   define('SECRET_KEY', 'сгенерируйте_командой_ниже');
+   
+   Генерация ключа:
+   php -r "echo bin2hex(random_bytes(32)) . PHP_EOL;"
+
+► ШАГ 8: Установите права
+   
+   chown -R www-data:www-data /var/www/html/warranty-saas
+   chmod -R 755 /var/www/html/warranty-saas
+   chmod -R 775 /var/www/html/warranty-saas/uploads
+
+► ШАГ 9: Настройте Apache
+   
+   nano /etc/apache2/sites-available/warranty.conf
+   
+   Вставьте:
+   ─────────────────────────────────────────────────────────────
+   <VirtualHost *:80>
+       ServerName yourservice.com
+       ServerAlias *.yourservice.com
+       DocumentRoot /var/www/html/warranty-saas
+       
+       <Directory /var/www/html/warranty-saas>
+           Options -Indexes +FollowSymLinks
+           AllowOverride All
+           Require all granted
+       </Directory>
+       
+       ErrorLog ${APACHE_LOG_DIR}/warranty_error.log
+       CustomLog ${APACHE_LOG_DIR}/warranty_access.log combined
+   </VirtualHost>
+   ─────────────────────────────────────────────────────────────
+   
+   Включите сайт:
+   a2ensite warranty.conf
+   a2enmod rewrite
+   a2dissite 000-default.conf
+   systemctl restart apache2
+
+► ШАГ 10: Настройте DNS
+   
+   В панели управления доменом (Cloudflare/Namecheap/etc):
+   
+   Тип    Имя                     Значение
+   ────────────────────────────────────────────────
+   A      @                       ваш_server_ip
+   A      *                       ваш_server_ip
+   
+   ⏱ DNS обновляется 5-15 минут (макс. 24 часа)
+
+► ШАГ 11: Установите SSL (Let's Encrypt)
+   
+   apt install certbot python3-certbot-apache -y
+   certbot --apache -d yourservice.com -d *.yourservice.com
+   
+   Отвечайте:
+   - Email: ваш@email.com
+   - Terms: A (agree)
+   - Redirect HTTP to HTTPS: 2 (yes)
+   
+   ⚠️ Для wildcard (*.yourservice.com) нужна DNS-валидация
+
+► ШАГ 12: Настройте Firewall
+   
+   ufw allow 'Apache Full'
+   ufw allow OpenSSH
+   ufw enable
+
+► ШАГ 13: Первый вход
+   
+   https://yourservice.com/login.php
+   Email: sundoze87@gmail.com
+   Password: nifrit2303!@#
+   
+   ⚠️ СРАЗУ СМЕНИТЕ ПАРОЛЬ!
+
+✅ PRODUCTION СЕРВЕР ГОТОВ!
+
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ СЦЕНАРИЙ C: SHARED ХОСТИНГ (cPanel/Plesk)                                 ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+📍 Для обычных хостингов с панелью управления
+
+► ШАГ 1: Загрузите файлы
+   
+   FTP/SFTP:
+   - Подключитесь через FileZilla/WinSCP
+   - Загрузите в public_html/warranty-saas/
+   
+   cPanel File Manager:
+   - Загрузите ZIP
+   - Распакуйте в public_html/warranty-saas/
+
+► ШАГ 2: Создайте базу данных (cPanel)
+   
+   1. cPanel → MySQL Databases
+   2. Create Database: warranty_saas
+   3. Create User: warranty_user + пароль
+   4. Add User to Database (ALL PRIVILEGES)
+   5. Запомните полные имена (обычно username_warranty_saas)
+
+► ШАГ 3: Импортируйте схему
+   
+   1. cPanel → phpMyAdmin
+   2. Выберите базу username_warranty_saas
+   3. Импорт → Загрузите database.sql
+
+► ШАГ 4: Настройте config.php
+   
+   define('DB_HOST', 'localhost');  // Иногда это IP
+   define('DB_NAME', 'username_warranty_saas');
+   define('DB_USER', 'username_warranty_user');
+   define('DB_PASS', 'ваш_пароль');
+   define('MAIN_DOMAIN', 'yourservice.com');
+   define('PROTOCOL', 'https://');
+
+► ШАГ 5: Настройте поддомены
+   
+   cPanel → Domains → Subdomains
+   
+   Если есть wildcard:
+   - Subdomain: *
+   - Document Root: public_html/warranty-saas
+   
+   Если нет wildcard (создавайте вручную):
+   - test.yourservice.com → /public_html/warranty-saas
+   - demo.yourservice.com → /public_html/warranty-saas
+
+► ШАГ 6: SSL сертификат
+   
+   cPanel → SSL/TLS → Install SSL
+   Включите AutoSSL (если доступен)
+
+► ШАГ 7: Первый вход
+   
+   https://yourservice.com/warranty-saas/login.php
+   Email: sundoze87@gmail.com
+   Password: nifrit2303!@#
+
+✅ SHARED ХОСТИНГ ГОТОВ!
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🔧 УСТРАНЕНИЕ ПРОБЛЕМ                                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+❌ "Database connection failed"
+─────────────────────────────────────
+   1. Проверьте данные в config.php
+   2. Проверьте подключение:
+      mysql -u warranty_user -p warranty_saas
+   3. Убедитесь, что пользователь имеет права
+
+❌ "Page not found" (404)
+─────────────────────────────────────
+   1. Проверьте .htaccess файл
+   2. Включите mod_rewrite:
+      a2enmod rewrite
+      systemctl restart apache2
+   3. Проверьте AllowOverride All в VirtualHost
+
+❌ Поддомены не работают
+─────────────────────────────────────
+   1. Проверьте DNS:
+      nslookup test.yourservice.com
+   2. Дождитесь распространения (до 24ч)
+   3. Очистите кеш DNS:
+      Windows: ipconfig /flushdns
+      Mac: sudo dscacheutil -flushcache
+      Linux: sudo systemd-resolve --flush-caches
+
+❌ "Permission denied"
+─────────────────────────────────────
+   chown -R www-data:www-data /var/www/html/warranty-saas
+   chmod -R 755 /var/www/html/warranty-saas
+   chmod -R 775 /var/www/html/warranty-saas/uploads
+
+❌ Email не отправляются
+─────────────────────────────────────
+   1. Проверьте логи: /var/log/apache2/error.log
+   2. Настройте SMTP (см. INSTALLATION.md)
+   3. Используйте SendGrid/Mailgun
+
+❌ "Internal Server Error" (500)
+─────────────────────────────────────
+   1. Проверьте логи:
+      tail -f /var/log/apache2/error.log
+   2. Включите DEBUG_MODE в config.php
+   3. Проверьте синтаксис:
+      php -l config.php
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ✅ ФИНАЛЬНАЯ ПРОВЕРКА                                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+После установки проверьте:
+
+   □ https://yourservice.com/login.php открывается
+   □ Вход под admin работает
+   □ https://yourservice.com/register.php работает
+   □ Админ-панель доступна
+   □ Создан и одобрен тестовый пользователь
+   □ https://testuser.yourservice.com открывается
+   □ Форма отправляется без ошибок
+   □ Заявка появилась в /dashboard/submissions.php
+   □ SSL сертификат установлен (зеленый замок)
+   □ Пароль администратора изменён
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 📚 ДОКУМЕНТАЦИЯ                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+📍 START_HERE.md           ← НАЧНИТЕ С ЭТОГО
+📖 QUICKSTART.md           ← Подробная установка (читать!)
+⚡ CHEATSHEET.md           ← Команды и шпаргалка
+📄 README.md               ← Обзор возможностей
+📦 INSTALLATION.md         ← Детальная инструкция
+📊 PROJECT_SUMMARY.md      ← Архитектура проекта
+
+Оригинальные инструкции:
+  • TELEGRAM_SETUP.md      - настройка Telegram
+  • GOOGLE_SHEETS_SETUP.md - настройка Google Sheets
+  • WIDGET_SETUP.md        - настройка виджета
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🎯 МИНИМАЛЬНЫЕ ТРЕБОВАНИЯ                                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   ✅ PHP 7.4+
+   ✅ MySQL 5.7+
+   ✅ Apache/Nginx с mod_rewrite
+   ✅ Домен с wildcard DNS
+   ✅ SSL сертификат (рекомендуется)
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🔑 ДЕФОЛТНЫЕ ДАННЫЕ                                                          │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   Администратор:
+   ──────────────────────
+   Email: sundoze87@gmail.com
+   Password: nifrit2303!@#
+   
+   ⚠️ ОБЯЗАТЕЛЬНО СМЕНИТЕ ПАРОЛЬ ПОСЛЕ ВХОДА!
+
+   База данных:
+   ──────────────────────
+   Database: warranty_saas
+   User: warranty_user (создается вручную)
+   Tables: 6 (users, form_design, form_integrations, etc.)
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 💡 СОВЕТ                                                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   Начните с ЛОКАЛЬНОЙ установки (Сценарий A) для тестирования,
+   затем переносите на production сервер (Сценарий B).
+   
+   Это позволит:
+   • Понять как работает система
+   • Протестировать функционал
+   • Избежать ошибок на production
+   • Настроить всё правильно
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 📞 НУЖНА ПОМОЩЬ?                                                             │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   1. Проверьте логи:
+      tail -f /var/log/apache2/error.log
+   
+   2. Включите debug в config.php:
+      define('DEBUG_MODE', true);
+   
+   3. Проверьте версии:
+      php -v        # 7.4+
+      mysql --version  # 5.7+
+   
+   4. Читайте QUICKSTART.md → раздел "Устранение проблем"
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         🎉 ГОТОВЫ НАЧАТЬ?                                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+   1. 📖 Выберите ваш сценарий (A/B/C)
+   2. 🎯 Следуйте инструкциям выше
+   3. ✅ Проверьте работу
+   4. 🚀 Запустите сервис!
+
+   ⏱ Время установки: 15-30 минут
+
+   ────────────────────────────────────────────────────────────────────────
+
+   📍 Для детальных инструкций откройте:
+      START_HERE.md → QUICKSTART.md
+
+   ────────────────────────────────────────────────────────────────────────
+
+   Создано с ❤️ для управления гарантиями
+   
+   Версия: 1.0.0 | Дата: 31.10.2025
+
+╚══════════════════════════════════════════════════════════════════════════════╝

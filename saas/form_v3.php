@@ -1,20 +1,126 @@
+<?php
+/**
+ * Форма гарантии с фиксированной структурой (Версия 3.0)
+ * Структура из warranty.html, но с редактируемыми labels
+ */
+
+// Включаем отображение ошибок для отладки
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+define('SAAS_SYSTEM', true);
+require_once 'config.php';
+
+// Получение form_id из URL
+$form_id = $_GET['id'] ?? '';
+
+if (empty($form_id)) {
+    die('Неверная ссылка на форму');
+}
+
+// Получение пользователя по form_id
+$stmt = $pdo->prepare("SELECT * FROM users WHERE form_id = ? AND status = 'approved'");
+$stmt->execute([$form_id]);
+$user = $stmt->fetch();
+
+if (!$user) {
+    die('Форма не найдена или не активирована');
+}
+
+// Получение настроек дизайна
+$stmt = $pdo->prepare("SELECT * FROM form_design WHERE user_id = ?");
+$stmt->execute([$user['id']]);
+$design = $stmt->fetch();
+
+// Получение labels для шагов (с проверкой существования таблицы)
+$labels = [];
+try {
+    $stmt = $pdo->prepare("SELECT * FROM form_labels WHERE user_id = ? ORDER BY step_number ASC");
+    $stmt->execute([$user['id']]);
+    $labels_raw = $stmt->fetchAll();
+    
+    // Индексирование labels по номеру шага
+    foreach ($labels_raw as $label) {
+        $labels[$label['step_number']] = $label;
+    }
+} catch (PDOException $e) {
+    // Таблица form_labels не существует - используем дефолтные значения
+    $labels = [];
+}
+
+// Получение карточек скидок (с проверкой существования таблицы)
+$discount_cards = [];
+try {
+    $stmt = $pdo->prepare("SELECT * FROM discount_cards WHERE user_id = ? AND is_enabled = 1 ORDER BY card_order ASC");
+    $stmt->execute([$user['id']]);
+    $discount_cards = $stmt->fetchAll();
+} catch (PDOException $e) {
+    // Таблица discount_cards не существует - используем дефолтные карточки
+    $discount_cards = [
+        ['card_title' => 'Клей', 'card_text' => 'Скидка 10%', 'card_value' => 'Клей', 'card_image' => '/images/glue.jpg'],
+        ['card_title' => 'Плинтус', 'card_text' => 'Скидка 5%', 'card_value' => 'Плинтус', 'card_image' => '/images/baseboard.jpg'],
+        ['card_title' => 'Подложка', 'card_text' => 'Скидка 5%', 'card_value' => 'Подложка', 'card_image' => '/images/underlay.jpg'],
+        ['card_title' => 'Грунтовка', 'card_text' => 'Скидка 10%', 'card_value' => 'Грунтовка', 'card_image' => '/images/primer.jpg'],
+        ['card_title' => 'Укладка', 'card_text' => 'Скидка 30%', 'card_value' => 'Укладка', 'card_image' => '/images/installation.jpg'],
+    ];
+}
+
+// Получение настроек интеграций
+$stmt = $pdo->prepare("SELECT * FROM form_integrations WHERE user_id = ?");
+$stmt->execute([$user['id']]);
+$integrations = $stmt->fetch();
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Активация стандартной гарантии на напольные покрытия</title>
-    <link rel="stylesheet" href="styles.css">
+    <title><?= h($user['company_name']) ?> - Активация гарантии</title>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/warranty-form.css">
     <script src="https://unpkg.com/imask"></script>
+    
+    <style>
+        /* Динамические стили на основе настроек пользователя */
+        body {
+            background: linear-gradient(135deg, 
+                <?= h($design['background_gradient_start']) ?> 0%, 
+                <?= h($design['background_gradient_middle']) ?> 50%, 
+                <?= h($design['background_gradient_end']) ?> 100%
+            );
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, <?= h($design['button_color']) ?> 0%, color-mix(in srgb, <?= h($design['button_color']) ?> 80%, black) 100%);
+        }
+        
+        .btn:hover {
+            background: <?= h($design['button_color']) ?>;
+        }
+        
+        .red {
+            color: <?= h($design['primary_color']) ?>;
+        }
+        
+        .star.active .star-icon,
+        .star.hover-active .star-icon {
+            color: <?= h($design['primary_color']) ?>;
+        }
+    </style>
 </head>
 <body>
     <div id="site">
         <div class="container">
             <div class="container-border"></div>
-            <form id="warrantyForm" method="post" action="send-warranty.php">
+            <form id="warrantyForm" method="post" action="<?= BASE_URL ?>/api/submit_warranty.php">
+                <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+                <input type="hidden" name="form_id" value="<?= h($form_id) ?>">
+                
                 <div class="header">
                     <h1>
-                        <img src="logo.png" alt="Логотип" class="logo-image">
+                        <?php if ($design['logo_url']): ?>
+                            <img src="<?= BASE_URL . h($design['logo_url']) ?>" alt="<?= h($user['company_name']) ?>" class="logo-image">
+                        <?php endif; ?>
                         <span class="main-title"><span class="b1">Активация гарантийного талона</span></span>
                     </h1>
                     <h3 class="subtitle">Уважаемый заказчик, для активации гарантии Вам необходимо заполнить эту анкету. Гарантия будет активирована автоматически.</h3>
@@ -27,8 +133,8 @@
                         <div class="content">
                             <div class="content-container">
                                 <div class="info">
-                                    <div class="title">Идентификация</div>
-                                    <div class="subtitle">Пожалуйста, введите номер телефона или договора,<br> на который был сделан заказ</div>
+                                    <div class="title"><?= h($labels[1]['step_title'] ?? 'Идентификация') ?></div>
+                                    <div class="subtitle"><?= nl2br(h($labels[1]['step_subtitle'] ?? 'Пожалуйста, введите номер телефона или договора, на который был сделан заказ')) ?></div>
                                 </div>
                                 <div class="variable">
                                     <div class="red-error" style="display: none;">Вы пропустили этот вопрос</div>
@@ -50,8 +156,8 @@
                         <div class="content">
                             <div class="content-container">
                                 <div class="info">
-                                    <div class="title">Дополнительные работы, которые не вошли в договор</div>
-                                    <div class="subtitle">Если были дополнительные работы, которые не перечислены в договоре,<br> укажите их здесь, чтобы включить их в гарантию.<br><br>Вы оплачивали дополнительные работы, незафиксированные в договоре?<br><br></div>
+                                    <div class="title"><?= h($labels[2]['step_title'] ?? 'Дополнительные работы, которые не вошли в договор') ?></div>
+                                    <div class="subtitle"><?= nl2br(h($labels[2]['step_subtitle'] ?? 'Если были дополнительные работы, которые не перечислены в договоре, укажите их здесь, чтобы включить их в гарантию. Вы оплачивали дополнительные работы, незафиксированные в договоре?')) ?></div>
                                 </div>
                                 <div class="variable">
                                     <div class="red-error" style="display: none;">Вы пропустили этот вопрос</div>
@@ -101,8 +207,8 @@
                         <div class="content">
                             <div class="content-container">
                                 <div class="info">
-                                    <div class="title">Работа продавцов</div>
-                                    <div class="subtitle">Оцените по 5-балльной шкале,<br> насколько продавец был внимателен<br> к вашим желаниям и подбирал<br> лучшее решение</div>
+                                    <div class="title"><?= h($labels[3]['step_title'] ?? 'Работа продавцов') ?></div>
+                                    <div class="subtitle"><?= nl2br(h($labels[3]['step_subtitle'] ?? 'Оцените по 5-балльной шкале, насколько продавец был внимателен к вашим желаниям и подбирал лучшее решение')) ?></div>
                                 </div>
                                 <div class="variable">
                                     <div class="red-error" style="display: none;">Вы пропустили этот вопрос</div>
@@ -150,8 +256,8 @@
                         <div class="content">
                             <div class="content-container">
                                 <div class="info">
-                                    <div class="title">Работа доставки</div>
-                                    <div class="subtitle">Оцените по 5-балльной шкале,<br> насколько быстро и аккуратно<br> доставили Вашу покупку</div>
+                                    <div class="title"><?= h($labels[4]['step_title'] ?? 'Работа доставки') ?></div>
+                                    <div class="subtitle"><?= nl2br(h($labels[4]['step_subtitle'] ?? 'Оцените по 5-балльной шкале, насколько быстро и аккуратно доставили Вашу покупку')) ?></div>
                                 </div>
                                 <div class="variable">
                                     <div class="red-error" style="display: none;">Вы пропустили этот вопрос</div>
@@ -199,8 +305,8 @@
                         <div class="content">
                             <div class="content-container">
                                 <div class="info">
-                                    <div class="title">Работа монтажников<br> (если заказывали монтаж<br> в нашей компании)</div>
-                                    <div class="subtitle">Оцените по 5-балльной шкале,<br> насколько качественно<br> уложили напольное покрытие</div>
+                                    <div class="title"><?= h($labels[5]['step_title'] ?? 'Работа монтажников (если заказывали монтаж в нашей компании)') ?></div>
+                                    <div class="subtitle"><?= nl2br(h($labels[5]['step_subtitle'] ?? 'Оцените по 5-балльной шкале, насколько качественно уложили напольное покрытие')) ?></div>
                                 </div>
                                 <div class="variable">
                                     <div class="red-error" style="display: none;">Вы пропустили этот вопрос</div>
@@ -248,14 +354,15 @@
                         <div class="content">
                             <div class="content-container">
                                 <div class="info">
-                                    <div class="title">Забронируйте скидку на сопутствующие товары и укладку</div>
-                                    <div class="subtitle">Можете выбрать один или несколько вариантов</div>
+                                    <div class="title"><?= h($labels[6]['step_title'] ?? 'Забронируйте скидку на сопутствующие товары и укладку') ?></div>
+                                    <div class="subtitle"><?= h($labels[6]['step_subtitle'] ?? 'Можете выбрать один или несколько вариантов') ?></div>
                                 </div>
                                 <div class="variable">
                                     <div class="red-error" style="display: none;">Вы пропустили этот вопрос</div>
                                     
+                                    <?php foreach ($discount_cards as $card): ?>
                                     <label class="big-input-radio big-checkbox">
-                                        <input type="checkbox" name="discounts[]" value="Клей" data-step="6">
+                                        <input type="checkbox" name="discounts[]" value="<?= h($card['card_value']) ?>" data-step="6">
                                         <div class="big-input-content">
                                             <div class="input-left">
                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 417.065 417.065">
@@ -263,71 +370,14 @@
                                                 </svg>
                                             </div>
                                             <div class="big-active"></div>
-                                            <div class="big-img" style="background-image: url('images/glue.jpg');"></div>
-                                            <div class="big-title">Клей</div>
-                                            <div class="big-text">Скидка 10%</div>
+                                            <?php if ($card['card_image']): ?>
+                                            <div class="big-img" style="background-image: url('<?= BASE_URL . h($card['card_image']) ?>');"></div>
+                                            <?php endif; ?>
+                                            <div class="big-title"><?= h($card['card_title']) ?></div>
+                                            <div class="big-text"><?= h($card['card_text']) ?></div>
                                         </div>
                                     </label>
-
-                                    <label class="big-input-radio big-checkbox">
-                                        <input type="checkbox" name="discounts[]" value="Плинтус" data-step="6">
-                                        <div class="big-input-content">
-                                            <div class="input-left">
-                                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 417.065 417.065">
-                                                    <path d="M401.56,47.087c-17.452-14.176-42.561-12.128-56.095,4.536L167.042,271.598L73.913,150.58 c-13.892-18.037-39.781-21.411-57.819-7.535c-18.054,13.884-21.427,39.781-7.535,57.843l125.001,162.433 c13.892,18.037,39.789,21.419,57.835,7.535c5.145-3.959,8.95-8.958,11.648-14.42l205.645-253.514 C422.215,86.234,419.02,61.247,401.56,47.087z"/>
-                                                </svg>
-                                            </div>
-                                            <div class="big-active"></div>
-                                            <div class="big-img" style="background-image: url('images/baseboard.jpg');"></div>
-                                            <div class="big-title">Плинтус</div>
-                                            <div class="big-text">Скидка 5%</div>
-                                        </div>
-                                    </label>
-
-                                    <label class="big-input-radio big-checkbox">
-                                        <input type="checkbox" name="discounts[]" value="Подложка" data-step="6">
-                                        <div class="big-input-content">
-                                            <div class="input-left">
-                                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 417.065 417.065">
-                                                    <path d="M401.56,47.087c-17.452-14.176-42.561-12.128-56.095,4.536L167.042,271.598L73.913,150.58 c-13.892-18.037-39.781-21.411-57.819-7.535c-18.054,13.884-21.427,39.781-7.535,57.843l125.001,162.433 c13.892,18.037,39.789,21.419,57.835,7.535c5.145-3.959,8.95-8.958,11.648-14.42l205.645-253.514 C422.215,86.234,419.02,61.247,401.56,47.087z"/>
-                                                </svg>
-                                            </div>
-                                            <div class="big-active"></div>
-                                            <div class="big-img" style="background-image: url('images/underlay.jpg');"></div>
-                                            <div class="big-title">Подложка</div>
-                                            <div class="big-text">Скидка 5%</div>
-                                        </div>
-                                    </label>
-
-                                    <label class="big-input-radio big-checkbox">
-                                        <input type="checkbox" name="discounts[]" value="Грунтовка" data-step="6">
-                                        <div class="big-input-content">
-                                            <div class="input-left">
-                                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 417.065 417.065">
-                                                    <path d="M401.56,47.087c-17.452-14.176-42.561-12.128-56.095,4.536L167.042,271.598L73.913,150.58 c-13.892-18.037-39.781-21.411-57.819-7.535c-18.054,13.884-21.427,39.781-7.535,57.843l125.001,162.433 c13.892,18.037,39.789,21.419,57.835,7.535c5.145-3.959,8.95-8.958,11.648-14.42l205.645-253.514 C422.215,86.234,419.02,61.247,401.56,47.087z"/>
-                                                </svg>
-                                            </div>
-                                            <div class="big-active"></div>
-                                            <div class="big-img" style="background-image: url('images/primer.jpg');"></div>
-                                            <div class="big-title">Грунтовка</div>
-                                            <div class="big-text">Скидка 10%</div>
-                                        </div>
-                                    </label>
-
-                                    <label class="big-input-radio big-checkbox">
-                                        <input type="checkbox" name="discounts[]" value="Укладка" data-step="6">
-                                        <div class="big-input-content">
-                                            <div class="input-left">
-                                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 417.065 417.065">
-                                                    <path d="M401.56,47.087c-17.452-14.176-42.561-12.128-56.095,4.536L167.042,271.598L73.913,150.58 c-13.892-18.037-39.781-21.411-57.819-7.535c-18.054,13.884-21.427,39.781-7.535,57.843l125.001,162.433 c13.892,18.037,39.789,21.419,57.835,7.535c5.145-3.959,8.95-8.958,11.648-14.42l205.645-253.514 C422.215,86.234,419.02,61.247,401.56,47.087z"/>
-                                                </svg>
-                                            </div>
-                                            <div class="big-active"></div>
-                                            <div class="big-img" style="background-image: url('images/installation.jpg');"></div>
-                                            <div class="big-title">Укладка</div>
-                                            <div class="big-text">Скидка 30%</div>
-                                        </div>
-                                    </label>
+                                    <?php endforeach; ?>
 
                                     <label class="input-radio radio full-width">
                                         <input type="checkbox" name="discounts[]" value="Ничего не нужно" data-step="6" id="nothing-needed">
@@ -358,6 +408,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/warranty-form.js"></script>
 </body>
 </html>

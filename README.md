@@ -1,6 +1,6 @@
 # Warranty Activation Page / Страница активации гарантии
 
-This is a warranty activation form page with **Apple Liquid Glass Design** inspired by https://i-laminat.ru/garantia/
+This is a warranty activation form page with **Apple Liquid Glass Design** 
 
 ## Files / Файлы
 

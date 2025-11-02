@@ -1,0 +1,346 @@
+/**
+ * Дополнительные стили для админ-панели
+ */
+
+.admin-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--danger-color);
+    color: white;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+}
+
+.stat-warning {
+    border-left: 4px solid var(--warning-color);
+}
+
+.stat-success {
+    border-left: 4px solid var(--success-color);
+}
+
+.admin-section {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.admin-section h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+/* ========== PENDING LIST ========== */
+.pending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pending-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: var(--bg-primary);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.pending-info {
+    flex: 1;
+}
+
+.pending-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.pending-email {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.pending-subdomain {
+    margin-bottom: 4px;
+}
+
+.pending-date {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.pending-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-approve,
+.btn-reject {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-approve {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-approve:hover {
+    background: #30d158;
+    transform: translateY(-1px);
+}
+
+.btn-reject {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-reject:hover {
+    background: #ff453a;
+    transform: translateY(-1px);
+}
+
+/* ========== ACTIVITY LOG ========== */
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.activity-item {
+    padding: 16px;
+    background: var(--bg-primary);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 16px;
+    align-items: center;
+}
+
+.activity-time {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-family: 'SF Mono', monospace;
+}
+
+.activity-user {
+    font-weight: 600;
+}
+
+.activity-email {
+    display: block;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.activity-action {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-family: 'SF Mono', monospace;
+}
+
+.activity-description {
+    grid-column: 2 / -1;
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding-top: 8px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* ========== TABLE ========== */
+.table-container {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table thead {
+    background: var(--bg-primary);
+}
+
+.users-table th {
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.users-table td {
+    padding: 16px;
+    border-top: 1px solid var(--border-color);
+    font-size: 14px;
+}
+
+.users-table tr:hover {
+    background: var(--bg-primary);
+}
+
+.users-table code {
+    background: var(--bg-primary);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'SF Mono', monospace;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-success {
+    background: rgba(52, 199, 89, 0.15);
+    color: var(--success-color);
+}
+
+.btn-success:hover {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-danger {
+    background: rgba(255, 59, 48, 0.15);
+    color: var(--danger-color);
+}
+
+.btn-danger:hover {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-warning {
+    background: rgba(255, 149, 0, 0.15);
+    color: var(--warning-color);
+}
+
+.btn-warning:hover {
+    background: var(--warning-color);
+    color: white;
+}
+
+.badge-warning {
+    background: rgba(255, 149, 0, 0.15);
+    color: var(--warning-color);
+}
+
+.badge-danger {
+    background: rgba(255, 59, 48, 0.15);
+    color: var(--danger-color);
+}
+
+.badge-admin {
+    background: var(--danger-color);
+    color: white;
+}
+
+.page-heading {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    letter-spacing: -1px;
+}
+
+.alert {
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+.alert-success {
+    background: rgba(52, 199, 89, 0.15);
+    border: 1px solid var(--success-color);
+    color: var(--success-color);
+}
+
+.alert-error {
+    background: rgba(255, 59, 48, 0.15);
+    border: 1px solid var(--danger-color);
+    color: var(--danger-color);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+    .users-table {
+        font-size: 13px;
+    }
+    
+    .users-table th,
+    .users-table td {
+        padding: 12px 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .users-table {
+        min-width: 900px;
+    }
+    
+    .pending-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .pending-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+    
+    .btn-approve,
+    .btn-reject {
+        flex: 1;
+    }
+    
+    .activity-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .activity-description {
+        grid-column: 1;
+    }
+}
