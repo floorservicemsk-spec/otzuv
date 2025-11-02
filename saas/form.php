@@ -1,31 +1,40 @@
 <?php
 /**
- * Динамическая форма гарантии для клиентов
- * Доступна на поддоменах: subdomain.yourservice.com
+ * Динамическая форма гарантии (Версия 2.0 - с form_id)
+ * URL: /form/{form_id}
  */
 define('SAAS_SYSTEM', true);
 require_once 'config.php';
 
-// Определение пользователя по поддомену
-$subdomain = getSubdomain();
+// Получение form_id из URL
+$form_id = $_GET['id'] ?? '';
 
-if (empty($subdomain) || $subdomain === 'www') {
-    die('Неверный поддомен');
+if (empty($form_id)) {
+    die('Неверная ссылка на форму');
 }
 
-// Получение пользователя
-$stmt = $pdo->prepare("SELECT * FROM users WHERE subdomain = ? AND status = 'approved'");
-$stmt->execute([$subdomain]);
+// Получение пользователя по form_id
+$stmt = $pdo->prepare("SELECT * FROM users WHERE form_id = ? AND status = 'approved'");
+$stmt->execute([$form_id]);
 $user = $stmt->fetch();
 
 if (!$user) {
-    die('Пользователь не найден или не активирован');
+    die('Форма не найдена или не активирована');
 }
 
 // Получение настроек дизайна
 $stmt = $pdo->prepare("SELECT * FROM form_design WHERE user_id = ?");
 $stmt->execute([$user['id']]);
 $design = $stmt->fetch();
+
+// Получение полей формы
+$stmt = $pdo->prepare("
+    SELECT * FROM form_fields 
+    WHERE user_id = ? AND is_enabled = 1 
+    ORDER BY field_order ASC, id ASC
+");
+$stmt->execute([$user['id']]);
+$form_fields = $stmt->fetchAll();
 
 // Получение настроек интеграций
 $stmt = $pdo->prepare("SELECT * FROM form_integrations WHERE user_id = ?");
@@ -39,7 +48,6 @@ $integrations = $stmt->fetch();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Активация гарантии - <?= h($user['company_name']) ?></title>
     
-    <!-- Оригинальные стили из warranty.html -->
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/form.css">
     <script src="https://unpkg.com/imask"></script>
     
@@ -67,6 +75,17 @@ $integrations = $stmt->fetch();
             margin: 0 auto 24px;
             display: block;
         }
+        
+        .step {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .step.active {
+            display: block;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -79,104 +98,250 @@ $integrations = $stmt->fetch();
         <p class="subtitle"><?= h($user['company_name']) ?></p>
         
         <form id="warranty-form" data-user-id="<?= $user['id'] ?>">
-            <!-- ШАГ 1: Номер телефона -->
-            <div class="step" data-step="1">
-                <div class="input">
-                    <span>Ваш номер телефона</span>
-                    <input type="text" name="phone" id="phone-input" placeholder="+7 (___) ___-__-__" data-step="1">
-                </div>
-            </div>
-            
-            <!-- ШАГ 2: Имя -->
-            <div class="step" data-step="2">
-                <div class="input">
-                    <span>Ваше имя</span>
-                    <input type="text" name="name" placeholder="Иван" data-step="2">
-                </div>
-            </div>
-            
-            <!-- ШАГ 3: Email -->
-            <div class="step" data-step="3">
-                <div class="input">
-                    <span>Ваша электронная почта</span>
-                    <input type="email" name="email" placeholder="example@mail.com" data-step="3">
-                </div>
-            </div>
-            
-            <!-- ШАГ 4: Оценка менеджера продаж -->
-            <div class="step" data-step="4">
-                <div class="input">
-                    <span>Оцените работу менеджера продаж</span>
-                    <div class="stars" data-rating-group="sales">
-                        <div class="star" data-value="1"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="2"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="3"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="4"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="5"><span class="star-icon">★</span></div>
+            <?php 
+            $step_number = 1;
+            foreach ($form_fields as $field): 
+                $is_first_step = ($step_number === 1);
+            ?>
+                <div class="step <?= $is_first_step ? 'active' : '' ?>" data-step="<?= $step_number ?>">
+                    <div class="input">
+                        <span><?= h($field['field_label']) ?></span>
+                        
+                        <?php if ($field['field_type'] === 'rating'): ?>
+                            <!-- Рейтинг звездами -->
+                            <div class="stars" data-rating-group="<?= h($field['field_key']) ?>">
+                                <div class="star" data-value="1"><span class="star-icon">★</span></div>
+                                <div class="star" data-value="2"><span class="star-icon">★</span></div>
+                                <div class="star" data-value="3"><span class="star-icon">★</span></div>
+                                <div class="star" data-value="4"><span class="star-icon">★</span></div>
+                                <div class="star" data-value="5"><span class="star-icon">★</span></div>
+                            </div>
+                            <input type="hidden" 
+                                   name="<?= h($field['field_key']) ?>" 
+                                   data-step="<?= $step_number ?>"
+                                   <?= $field['is_required'] ? 'required' : '' ?>>
+                            
+                            <div class="stars-btns">
+                                <button type="button" class="btn" onclick="submitStep(<?= $step_number ?>)">ПРОДОЛЖИТЬ</button>
+                            </div>
+                            
+                        <?php elseif ($field['field_type'] === 'textarea'): ?>
+                            <!-- Длинный текст -->
+                            <textarea 
+                                name="<?= h($field['field_key']) ?>" 
+                                placeholder="<?= h($field['placeholder']) ?>"
+                                data-step="<?= $step_number ?>"
+                                rows="4"
+                                <?= $field['is_required'] ? 'required' : '' ?>></textarea>
+                                
+                        <?php elseif ($field['field_type'] === 'checkbox'): ?>
+                            <!-- Чекбокс -->
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" 
+                                       id="field_<?= $field['id'] ?>"
+                                       name="<?= h($field['field_key']) ?>" 
+                                       data-step="<?= $step_number ?>"
+                                       <?= $field['is_required'] ? 'required' : '' ?>>
+                                <label for="field_<?= $field['id'] ?>"><?= h($field['placeholder'] ?: $field['field_label']) ?></label>
+                            </div>
+                            
+                        <?php else: ?>
+                            <!-- Обычные поля (text, email, tel, number) -->
+                            <input type="<?= h($field['field_type']) ?>" 
+                                   name="<?= h($field['field_key']) ?>" 
+                                   placeholder="<?= h($field['placeholder']) ?>"
+                                   data-step="<?= $step_number ?>"
+                                   <?= $field['field_key'] === 'phone' ? 'id="phone-input"' : '' ?>
+                                   <?= $field['is_required'] ? 'required' : '' ?>>
+                        <?php endif; ?>
                     </div>
-                    <input type="hidden" name="sales_rating" data-step="4">
                 </div>
-                <div class="stars-btns">
-                    <button type="button" class="btn" onclick="submitRating('sales')">ОСТАВИТЬ ОТЗЫВ</button>
-                </div>
-            </div>
+            <?php 
+                $step_number++;
+            endforeach; 
+            ?>
             
-            <!-- ШАГ 5: Оценка доставки -->
-            <div class="step" data-step="5">
-                <div class="input">
-                    <span>Оцените работу доставки</span>
-                    <div class="stars" data-rating-group="delivery">
-                        <div class="star" data-value="1"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="2"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="3"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="4"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="5"><span class="star-icon">★</span></div>
-                    </div>
-                    <input type="hidden" name="delivery_rating" data-step="5">
-                </div>
-                <div class="stars-btns">
-                    <button type="button" class="btn" onclick="submitRating('delivery')">ОСТАВИТЬ ОТЗЫВ</button>
-                </div>
-            </div>
-            
-            <!-- ШАГ 6: Оценка монтажников -->
-            <div class="step" data-step="6">
-                <div class="input">
-                    <span>Оцените работу монтажников</span>
-                    <div class="stars" data-rating-group="installation">
-                        <div class="star" data-value="1"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="2"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="3"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="4"><span class="star-icon">★</span></div>
-                        <div class="star" data-value="5"><span class="star-icon">★</span></div>
-                    </div>
-                    <input type="hidden" name="installation_rating" data-step="6">
-                </div>
-                <div class="stars-btns">
-                    <button type="button" class="btn" onclick="submitRating('installation')">ОСТАВИТЬ ОТЗЫВ</button>
-                </div>
-            </div>
-            
-            <!-- ШАГ 7: Согласие -->
-            <div class="step" data-step="7">
-                <div class="checkbox-wrapper">
-                    <input type="checkbox" id="consent" name="consent">
-                    <label for="consent">Даю согласие на обработку персональных данных</label>
-                </div>
-                <button type="submit" id="submit-btn" class="btn" disabled>АКТИВИРОВАТЬ ГАРАНТИЮ</button>
+            <!-- Финальная кнопка отправки -->
+            <div class="step" data-step="<?= $step_number ?>">
+                <button type="submit" id="submit-btn" class="btn">ОТПРАВИТЬ</button>
             </div>
         </form>
         
-        <h1 class="end" style="display: none;">Спасибо! Гарантийный талон активирован</h1>
+        <h1 class="end" style="display: none;">Спасибо! Заявка отправлена</h1>
     </div>
     
-    <script src="<?= BASE_URL ?>/assets/js/form.js"></script>
     <script>
-        // Передача данных пользователя в JS
+        // Передача данных в JS
         window.SAAS_CONFIG = {
             userId: <?= $user['id'] ?>,
-            apiUrl: '<?= BASE_URL ?>/api/submit.php'
+            formId: '<?= h($form_id) ?>',
+            apiUrl: '<?= BASE_URL ?>/api/submit_v2.php',
+            totalSteps: <?= $step_number ?>
         };
+        
+        let currentStep = 1;
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            initPhoneMask();
+            initStarRatings();
+            initFormNavigation();
+        });
+        
+        // Маска для телефона
+        function initPhoneMask() {
+            const phoneInput = document.getElementById('phone-input');
+            if (phoneInput) {
+                IMask(phoneInput, {
+                    mask: '+{7} (000) 000-00-00'
+                });
+                
+                phoneInput.addEventListener('blur', function() {
+                    if (this.value.includes('_') || this.value.length < 18) {
+                        this.classList.add('error');
+                    } else {
+                        this.classList.remove('error');
+                    }
+                });
+            }
+        }
+        
+        // Рейтинги звездами
+        function initStarRatings() {
+            const starContainers = document.querySelectorAll('.stars');
+            
+            starContainers.forEach(container => {
+                const stars = container.querySelectorAll('.star');
+                const group = container.getAttribute('data-rating-group');
+                
+                stars.forEach((star, index) => {
+                    star.addEventListener('mouseenter', function() {
+                        stars.forEach((s, i) => {
+                            if (i <= index) {
+                                s.classList.add('hover-active');
+                            } else {
+                                s.classList.remove('hover-active');
+                            }
+                        });
+                    });
+                    
+                    star.addEventListener('click', function() {
+                        const value = parseInt(this.getAttribute('data-value'));
+                        const hiddenInput = container.parentElement.querySelector('input[type="hidden"]');
+                        hiddenInput.value = value;
+                        
+                        stars.forEach((s, i) => {
+                            if (i < value) {
+                                s.classList.add('active');
+                            } else {
+                                s.classList.remove('active');
+                            }
+                        });
+                    });
+                });
+                
+                container.addEventListener('mouseleave', function() {
+                    stars.forEach(s => s.classList.remove('hover-active'));
+                });
+            });
+        }
+        
+        // Навигация по шагам
+        function initFormNavigation() {
+            const form = document.getElementById('warranty-form');
+            const steps = document.querySelectorAll('.step');
+            
+            steps.forEach(step => {
+                const input = step.querySelector('input, textarea');
+                if (input && input.type !== 'hidden' && input.type !== 'checkbox') {
+                    input.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const stepNum = parseInt(step.getAttribute('data-step'));
+                            submitStep(stepNum);
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Переход к следующему шагу
+        function submitStep(stepNum) {
+            const currentStepEl = document.querySelector(`.step[data-step="${stepNum}"]`);
+            const input = currentStepEl.querySelector('input[data-step], textarea[data-step]');
+            
+            // Валидация
+            if (input && input.required) {
+                if (!input.value || input.value.trim() === '') {
+                    alert('Пожалуйста, заполните это поле');
+                    input.focus();
+                    return;
+                }
+                
+                // Проверка телефона
+                if (input.id === 'phone-input' && (input.value.includes('_') || input.value.length < 18)) {
+                    alert('Пожалуйста, заполните номер телефона полностью');
+                    input.focus();
+                    return;
+                }
+            }
+            
+            // Скрыть текущий шаг
+            currentStepEl.classList.remove('active');
+            currentStepEl.style.opacity = '0.5';
+            currentStepEl.style.pointerEvents = 'none';
+            
+            // Показать следующий
+            const nextStep = stepNum + 1;
+            const nextStepEl = document.querySelector(`.step[data-step="${nextStep}"]`);
+            
+            if (nextStepEl) {
+                nextStepEl.classList.add('active');
+                setTimeout(() => {
+                    nextStepEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+        }
+        
+        // Отправка формы
+        document.getElementById('warranty-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                user_id: window.SAAS_CONFIG.userId,
+                form_id: window.SAAS_CONFIG.formId,
+                fields: {}
+            };
+            
+            // Собираем все поля в JSON
+            for (let [key, value] of formData.entries()) {
+                data.fields[key] = value;
+            }
+            
+            try {
+                const response = await fetch(window.SAAS_CONFIG.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('warranty-form').style.display = 'none';
+                    document.querySelector('.end').style.display = 'block';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    alert(result.message || 'Ошибка при отправке');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ошибка при отправке формы');
+            }
+        });
     </script>
 </body>
 </html>
